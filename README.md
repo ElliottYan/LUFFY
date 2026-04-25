@@ -382,3 +382,13 @@ If you find our model, data, or evaluation code useful, please kindly cite our p
 }
 ```
 
+
+
+---
+
+### Complete TODO List
+
+- [ ] **luffy/verl/verl/protocol.py:164** - TODO(zhangchi.usc1992) add consistency check
+- [ ] **luffy/verl/verl/protocol.py:260** - TODO: we can actually lift this restriction if needed
+- [ ] **luffy/verl/verl/protocol.py:346** - TODO (zhangchi.usc1992) whether to copy
+- [ ] **luffy/verl/verl/workers/fsdp_workers.py:88** - TODO(sgm): support FSDP hybrid shard for larger model
