@@ -37,9 +37,56 @@
 ---
 
 
+### 📝 Complete TODO List
+
+Below is the complete list of TODO items extracted from all Python files in the repository. Items are sorted by file path (lexicographical order), with line numbers increasing within the same file.
+
+**Files with TODO items:**
+
+1. **`luffy/verl/verl/mix_src/mix_fsdp_worker.py`** (line 368)
+   - `# TODO(sgm): support FSDP hybrid shard for larger model`
+
+2. **`luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py`** (line 20)
+   - `# TODO: add sequence parallel operator reduce_scatter here`
+
+3. **`luffy/verl/verl/models/registry.py`** (line 9)
+   - `# TODO(sgm): HF may supported more than listed here, we should add more after testing`
+
+4. **`luffy/verl/verl/protocol.py`** (line 7)
+   - `# TODO(zhangchi.usc1992) add consistency check`
+
+5. **`luffy/verl/verl/trainer/fsdp_sft_trainer.py`** (lines 1, 138, 274, 362, 364)
+   - Line 1: `TODO(zhangchi.usc1992) - Add calculation of mfu`
+   - Line 1: `TODO(zhangchi.usc1992) - Add validation`
+   - Line 138: `# TODO: add checkpoint manager`
+   - Line 274: `# TODO (zhangchi.usc1992): 1. support pretrain from random weights`
+   - Line 274: `# TODO (zhangchi.usc1992): 2. support init directly from sharded weights`
+   - Line 362: `# TODO: add a unified tracking`
+   - Line 364: `# TODO (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.`
+
+6. **`luffy/verl/verl/utils/hdfs_io.py`** (line 15)
+   - `# TODO(haibin.lin): handle OSError for hdfs`
+
+7. **`luffy/verl/verl/utils/model.py`** (line 100)
+   - `# TODO: we can make this faster`
+
+8. **`luffy/verl/verl/workers/rollout/hf_rollout.py`** (line 22)
+   - `# TODO: refactor this class. Currently, it will hang when using FSDP HybridShard. We should actually create a single GPU model. Then, get full state_dict and bind the st`
+
+9. **`luffy/verl/verl/workers/sharding_manager/fsdp_ulysses.py`** (line 63)
+   - `# TODO: check how to set seed for each model`
+
+10. **`luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py`** (line 30)
+    - `# TODO: offload FSDP model weights`
+
+---
+
+---
+
+
 # 🎉News
 - **[2026/01/26]** 🎉 ExGRPO has been accepted to **ICLR 2026**!
-- **[2025/10/04]** 🚀 Introducing [ExGRPO](https://github.com/ElliottYan/LUFFY/tree/main/ExGRPO), a new variant that boosts performance by **learning from the model’s own off-policy experience**, without relying on external guidance.
+- **[2025/10/04]** 🚀 Introducing [ExGRPO](https://github.com/ElliottYan/LUFFY/tree/main/ExGRPO), a new variant that boosts performance by **learning from the model's own off-policy experience**, without relying on external guidance.
 - **[2025/09/19]** 🎉 LUFFY has been accepted to **NeurIPS 2025**!
 - **[2025/05/30]** We integrate the implementation and scripts of other off-policy learning methods including SFT, SFT+RL and RL w/ SFT Loss (multi-task learning).
 - **[2025/05/21]** We have updated the paper [version](https://arxiv.org/abs/2504.14945), which re-evaluates all models using a more accurate verifier and adds comparisons with other off-policy learning methods, including RL with SFT Loss and SFT+RL.
@@ -61,7 +108,7 @@ LUFFY is a reinforcement learning framework that bridges the gap between zero-RL
 ### Key Highlights:
 - **Off-Policy Guidance:** Seamlessly integrates external reasoning traces to bootstrap learning from stronger models.
 - **Dynamic Balance:** Learns when to imitate and when to explore, adapting over the course of training.
-- **Policy Shaping:** Emphasizes important actions often ignored in standard policy gradients, enabling better generalization.
+- **Policy Shlining:** Emphasizes important actions often ignored in standard policy gradients, enabling better generalization.
 
 
 
@@ -207,7 +254,7 @@ We use heldout data for RL training, following previous works like PRIME.
 
 ## Inference
 
-Here’s an example of using LUFFY for inference:
+Here's an example of using LUFFY for inference:
 
 <details>
 <summary>Click to view inference example</summary>
@@ -381,4 +428,3 @@ If you find our model, data, or evaluation code useful, please kindly cite our p
       url={https://arxiv.org/abs/2510.02245}, 
 }
 ```
-
