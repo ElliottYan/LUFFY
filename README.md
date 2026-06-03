@@ -1,652 +1,941 @@
-<div align="center">
+# LUFFY: Learning to Reason Under Off‑Policy Guidance
 
+.. (first part: title, badges, overview, news, introduction, getting started, usage, evaluation tables) ...
 
-<h1 style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 0;">
-  <img src="./figures/logo.png" alt="LUFFY Icon" width="50">
-  LUFFY: Learning to Reason Under Off‑Policy Guidance
-</h1>
-<p align="center"><em>A general framework for off-policy learning in large reasoning models.</em></p>
-
-<div align="center">
-  <img src="./figures/luffy_intro_new.jpg" alt="overview" style="width: 66%; height: auto;">
-</div>
-
-
-[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](http://arxiv.org/abs/2504.14945) [![alphaXiv](https://img.shields.io/badge/discussion-A42C25?style=for-the-badge&logo=arxiv&logoColor=white&color=blue
-)](https://www.alphaxiv.org/abs/2504.14945) [![Github](https://img.shields.io/badge/LUFFY-000000?style=for-the-badge&logo=github&logoColor=000&logoColor=white)](https://github.com/ElliottYan/LUFFY)   [![Hugging Face Collection](https://img.shields.io/badge/LUFFY_Collection-fcd022?style=for-the-badge&logo=huggingface&logoColor=000)](https://huggingface.co/collections/Elliott/luffy-rl-6804e1f5d1ebe66ba8ac92f4) [![Twitter](https://img.shields.io/badge/Twitter-%23000000.svg?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/yafuly/status/1914559433549676962)
-
-
-
-
-
-</div>
-
----
-
-# 📚 Overview
-- 🎉 [News](#news)  
-- 📖 [Introduction](#introduction)  
-- ✨ [Getting Started](#getting-started)  
-- 🔧 [Usage](#usage)  
-- 📃 [Evaluation](#evaluation)  
-- 🎈 [Citation](#citation)  
-- 🌻 [Acknowledgement](#acknowledgement)  
-- 📝 [Complete TODO List](#-complete-todo-list)  
-<!-- - 📈 [Star History](#star-history) -->
-
-
-
-
----
+# 🌻Acknowledgement
 
 ### 📝 Complete TODO List
 
-- `ExGRPO/exgrpo/verl/examples/split_placement/split_monkey_patch.py:141` **TODO**: make a canonical logger that supports various backend
-- `ExGRPO/exgrpo/verl/tests/e2e/check_results.py:21` **TODO**: this function needs error handling
-- `ExGRPO/exgrpo/verl/tests/ray/test_high_level_scheduling_api.py:25` **TODO**: pass *args and **kwargs is bug prone and not very convincing
-- `ExGRPO/exgrpo/verl/tests/ray/test_worker_group_basics.py:43` **TODO**: pass *args and **kwargs is bug prone and not very convincing
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:83` **TODO**: it seems that manual offload is slowly than FSDP offload
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:207` **TODO**: add transformer policy
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:226` **TODO**: add more optimizer args into config
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:263` **TODO**: a sharding manager that do nothing?
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:426` **TODO**: here, we should return all metrics
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:586` **TODO**: support DCP and save sharded checkpoints
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py:90` **TODO**: add other ways to estimate advantages
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py:150` **TODO**: support each role have individual ray_worker_group_cls,
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py:197` **TODO**: we have to make sure the batch size is divisible by the dp size
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py:508` **TODO**: make a canonical logger that supports various backend
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py:552` **TODO**: add response length
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py:63` **TODO**: we have to make sure the batch size is divisible by the dp size
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py:437` **TODO**: make a canonical logger that supports various backend
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py:592` **TODO**: check path
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py:628` **TODO**: from remote not implemented yet
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_experience.py:64` **TODO**: support each role have individual ray_worker_group_cls,
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_experience.py:534` **TODO**: make a canonical logger that supports various backend
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_helper.py:40` **TODO**: add other ways to estimate advantages
-- `ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_helper.py:97` **TODO**: add response length
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_attention.py:380` **TODO**: llama does not have dropout in the config??
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py:78` **TODO**: add sequence parallel operator reduce_scatter here
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py:86` **TODO**: add sequence parallel operator all_gather here
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py:90` **TODO**: add sequence parallel operator reduce_scatter here
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/modeling_llama_megatron.py:37` **TODO**: 
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/modeling_llama_megatron.py:330` **TODO**: for better performance, the sp padding should be removed at each layer. Not sure the performance gap
-- `ExGRPO/exgrpo/verl/verl/models/llama/megatron/modeling_llama_megatron.py:588` **TODO**: for better performance, the sp padding should be removed at each layer. Not sure the performance gap
-- `ExGRPO/exgrpo/verl/verl/models/transformers/llama.py:88` **TODO**: These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
-- `ExGRPO/exgrpo/verl/verl/protocol.py:260` **TODO**: we can actually lift this restriction if needed
-- `ExGRPO/exgrpo/verl/verl/protocol.py:346` **TODO**: (zhangchi.usc1992) whether to copy
-- `ExGRPO/exgrpo/verl/verl/single_controller/ray/base.py:439` **TODO**: create a class with customizable name
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py:237` **HACK**: the autoregressive logics without only apply post process for better performance
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:101` **TODO**: currently is hfconfig
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:145` **TODO**: check get_lora_tokenizer func
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:586` **TODO**: check this input
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:661` **TODO**: we may not need to decode
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py:96` **TODO**: (pad to be divided by 4)
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py:189` **HACK**: the Sampler function in vllm v0.3.1
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_runner.py:64` **HACK**: to make the tests work. Refactor this.
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:62` **TODO**: check megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:84` **TODO**: need to implement a general way to deal with prefix
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:109` **TODO**: do not use cupy
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:291` **TODO**: (shengguangming): maybe we should also flag the megatron is initialized
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py:257` **TODO**: spec config
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/config.py:136` **TODO**: for multimodal model
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py:87` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py:268` **HACK**: the autoregressive logics without only apply post process for better performance
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:130` **TODO**: currently is hfconfig
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:145` **TODO**: check tokenizer class
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:153` **TODO**: don't know what's the usage
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:237` **TODO**: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:67` **TODO**: check megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:254` **TODO**: need to implement a general way to deal with prefix
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:325` **TODO**: (pad to be divided by 4)
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:337` **TODO**: remove dependencies from megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:152` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:191` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:237` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:246` **HACK**: the _get_logits function in vllm v0.4.2
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py:69` **HACK**: to make the tests work. Refactor this.
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:178` **HACK**: from the open-sourced version without
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:236` **TODO**: this will hang
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:245` **TODO**: will hang when used with device mesh
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:247` **TODO**: init using device mesh
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py:264` **XXX**: will hang in HF setting without megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py:366` **TODO**: spec config
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/config.py:191` **TODO**: check whether this is necessary
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py:40` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py:148` **TODO**: check usagecontext
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py:271` **TODO**: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:67` **TODO**: check megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:254` **TODO**: need to implement a general way to deal with prefix
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:163` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:203` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:250` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:259` **HACK**: the _get_logits function in vllm v0.4.2
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:138` **TODO**: check why True is not work in Ray trainer
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:165` **TODO**: check why True is not work in Ray trainer
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:177` **TODO**: init using device mesh (not support hybrid engine now)
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:197` **HACK**: from the open-sourced version without
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:249` **TODO**: check why True is not work in Ray trainer
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:253` **TODO**: init using device mesh (not support hybrid engine now)
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:84` **TODO**: we don't need driver
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:295` **XXX**: will hang in HF setting without megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py:37` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py:147` **TODO**: check usagecontext
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py:345` **TODO**: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:68` **TODO**: check megatron
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:255` **TODO**: need to implement a general way to deal with prefix
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:181` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:229` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:284` **FIXME**: Remove this after Mixtral is updated
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:293` **HACK**: the _get_logits function in vllm v0.4.2
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:144` **TODO**: check why True is not work in Ray trainer
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:172` **TODO**: check why True is not work in Ray trainer
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:185` **TODO**: init using device mesh (not support hybrid engine now)
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:205` **HACK**: from the open-sourced version without
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:257` **TODO**: check why True is not work in Ray trainer
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:262` **TODO**: init using device mesh (not support hybrid engine now)
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:92` **TODO**: we don't need driver
-- `ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:303` **XXX**: will hang in HF setting without megatron
-- `ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py:77` **TODO**: add checkpoint manager
-- `ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py:140` **TODO**: (zhangchi.usc1992):
-- `ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py:316` **TODO**: add a unified tracking
-- `ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py:333` **TODO**: (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:129` **TODO**: add other ways to estimate advantages
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:207` **TODO**: add response length
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:330` **TODO**: support each role have individual ray_worker_group_cls,
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:379` **TODO**: we have to make sure the batch size is divisible by the dp size
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:632` **TODO**: check path
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:667` **TODO**: from remote not implemented yet
-- `ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:885` **TODO**: make a canonical logger that supports various backend
-- `ExGRPO/exgrpo/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:101` **TODO**: shall we remove previous ckpt every save?
-- `ExGRPO/exgrpo/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:135` **TODO**: address optimizer is None
-- `ExGRPO/exgrpo/verl/verl/utils/model.py:164` **TODO**: we can make this faster
-- `ExGRPO/exgrpo/verl/verl/utils/model.py:272` **TODO**: to find a better way to load mistral7b-rm lm_head
-- `ExGRPO/exgrpo/verl/verl/utils/torch_functional.py:175` **TODO**: optimize this. Technically, we only need one broadcast
-- `ExGRPO/exgrpo/verl/verl/utils/torch_functional.py:184` **TODO**: optimize this.
-- `ExGRPO/exgrpo/verl/verl/utils/torch_functional.py:375` **TODO**: add them back
-- `ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py:158` **TODO**: (zhangchi.usc1992): actually, this function should only return log_prob and this logic should be handled by user outside
-- `ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py:225` **TODO**: actually, we just need to control the sampling order.
-- `ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py:301` **TODO**: we may use the new schedule instead
-- `ExGRPO/exgrpo/verl/verl/workers/critic/megatron_critic.py:176` **TODO**: we may use the new schedule instead
-- `ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py:117` **TODO**: it seems that manual offload is slowly than FSDP offload
-- `ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py:233` **TODO**: add transformer policy
-- `ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py:252` **TODO**: add more optimizer args into config
-- `ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py:289` **TODO**: a sharding manager that do nothing?
-- `ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py:416` **TODO**: here, we should return all metrics
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:57` **FIXME**: torch cumsum not support deterministic (used in vllm sampler),
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:204` **TODO**: add more optimizer args into config
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:338` **TODO**: here, we should return all metrics
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:478` **TODO**: support vpp here
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:507` **TODO**: add more optimizer args into config
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:667` **TODO**: add more optimizer args into config
-- `ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:720` **TODO**: reward model use itself tokenizer instead of sft tokenizer
-- `ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py:192` **TODO**: actually, we just need to control the sampling order.
-- `ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py:233` **TODO**: we may use the new schedule instead
-- `ExGRPO/exgrpo/verl/verl/workers/rollout/hf_rollout.py:16` **TODO**: refactor this class. Currently, it will hang when using FSDP HybridShard. We should actually create a single GPU model.
-- `ExGRPO/exgrpo/verl/verl/workers/rollout/hf_rollout.py:98` **TODO**: filter out the seq with no answers like ds-chat
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py:49` **TODO**: check how to set seed for each model
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py:56` **TODO**: check how to set seed for each model
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py:82` **TODO**: offload FSDP model weights
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py:113` **TODO**: Current impl doesn't consider FSDP with torch micro-dp
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py:122` **TODO**: Current impl doesn't consider FSDP with torch micro-dp
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py:130` **TODO**: shall we build a micro_dp group for vllm when integrating with vLLM?
-- `ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py:76` **TODO**: after binding to the memory buffer, we can load the checkpoint here
-- `luffy/test.py:1590` **TODO**: add smaller page sizes when https://github.com/Dao-AILab/flash-attention/pull/824 is merged
-- `luffy/verl/examples/split_placement/split_monkey_patch.py:141` **TODO**: make a canonical logger that supports various backend
-- `luffy/verl/tests/e2e/check_results.py:21` **TODO**: this function needs error handling
-- `luffy/verl/tests/ray/test_high_level_scheduling_api.py:25` **TODO**: pass *args and **kwargs is bug prone and not very convincing
-- `luffy/verl/tests/ray/test_worker_group_basics.py:43` **TODO**: pass *args and **kwargs is bug prone and not very convincing
-- `luffy/verl/verl/mix_src/mix_fsdp_worker.py:83` **TODO**: it seems that manual offload is slowly than FSDP offload
-- `luffy/verl/verl/mix_src/mix_fsdp_worker.py:207` **TODO**: add transformer policy
-- `luffy/verl/verl/mix_src/mix_fsdp_worker.py:226` **TODO**: add more optimizer args into config
-- `luffy/verl/verl/mix_src/mix_fsdp_worker.py:263` **TODO**: a sharding manager that do nothing?
-- `luffy/verl/verl/mix_src/mix_fsdp_worker.py:391` **TODO**: here, we should return all metrics
-- `luffy/verl/verl/mix_src/mix_fsdp_worker.py:517` **TODO**: support DCP and save sharded checkpoints
-- `luffy/verl/verl/mix_src/mix_trainer.py:90` **TODO**: add other ways to estimate advantages
-- `luffy/verl/verl/mix_src/mix_trainer.py:168` **TODO**: support each role have individual ray_worker_group_cls,
-- `luffy/verl/verl/mix_src/mix_trainer.py:293` **TODO**: we have to make sure the batch size is divisible by the dp size
-- `luffy/verl/verl/mix_src/mix_trainer.py:599` **TODO**: make a canonical logger that supports various backend
-- `luffy/verl/verl/mix_src/mix_trainer.py:637` **TODO**: add response length
-- `luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py:63` **TODO**: we have to make sure the batch size is divisible by the dp size
-- `luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py:437` **TODO**: make a canonical logger that supports various backend
-- `luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py:592` **TODO**: check path
-- `luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py:628` **TODO**: from remote not implemented yet
-- `luffy/verl/verl/models/llama/megatron/layers/parallel_attention.py:380` **TODO**: llama does not have dropout in the config??
-- `luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py:78` **TODO**: add sequence parallel operator reduce_scatter here
-- `luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py:86` **TODO**: add sequence parallel operator all_gather here
-- `luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py:90` **TODO**: add sequence parallel operator reduce_scatter here
-- `luffy/verl/verl/models/llama/megatron/modeling_llama_megatron.py:37` **TODO**: 
-- `luffy/verl/verl/models/llama/megatron/modeling_llama_megatron.py:330` **TODO**: for better performance, the sp padding should be removed at each layer. Not sure the performance gap
-- `luffy/verl/verl/models/llama/megatron/modeling_llama_megatron.py:588` **TODO**: for better performance, the sp padding should be removed at each layer. Not sure the performance gap
-- `luffy/verl/verl/models/transformers/llama.py:88` **TODO**: These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
-- `luffy/verl/verl/protocol.py:260` **TODO**: we can actually lift this restriction if needed
-- `luffy/verl/verl/protocol.py:346` **TODO**: (zhangchi.usc1992) whether to copy
-- `luffy/verl/verl/single_controller/ray/base.py:439` **TODO**: create a class with customizable name
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py:237` **HACK**: the autoregressive logics without only apply post process for better performance
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:101` **TODO**: currently is hfconfig
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:145` **TODO**: check get_lora_tokenizer func
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:586` **TODO**: check this input
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:661` **TODO**: we may not need to decode
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py:96` **TODO**: (pad to be divided by 4)
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py:189` **HACK**: the Sampler function in vllm v0.3.1
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_runner.py:64` **HACK**: to make the tests work. Refactor this.
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:62` **TODO**: check megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:84` **TODO**: need to implement a general way to deal with prefix
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:109` **TODO**: do not use cupy
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:291` **TODO**: (shengguangming): maybe we should also flag the megatron is initialized
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py:257` **TODO**: spec config
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/config.py:136` **TODO**: for multimodal model
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py:87` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py:268` **HACK**: the autoregressive logics without only apply post process for better performance
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:130` **TODO**: currently is hfconfig
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:145` **TODO**: check tokenizer class
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:153` **TODO**: don't know what's the usage
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:237` **TODO**: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:67` **TODO**: check megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:254` **TODO**: need to implement a general way to deal with prefix
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:325` **TODO**: (pad to be divided by 4)
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:337` **TODO**: remove dependencies from megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:152` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:191` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:237` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:246` **HACK**: the _get_logits function in vllm v0.4.2
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py:69` **HACK**: to make the tests work. Refactor this.
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:178` **HACK**: from the open-sourced version without
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:236` **TODO**: this will hang
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:245` **TODO**: will hang when used with device mesh
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:247` **TODO**: init using device mesh
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py:264` **XXX**: will hang in HF setting without megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py:366` **TODO**: spec config
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/config.py:191` **TODO**: check whether this is necessary
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py:40` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py:148` **TODO**: check usagecontext
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py:271` **TODO**: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:67` **TODO**: check megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:254` **TODO**: need to implement a general way to deal with prefix
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:163` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:203` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:250` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:259` **HACK**: the _get_logits function in vllm v0.4.2
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:138` **TODO**: check why True is not work in Ray trainer
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:165` **TODO**: check why True is not work in Ray trainer
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:177` **TODO**: init using device mesh (not support hybrid engine now)
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:197` **HACK**: from the open-sourced version without
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:249` **TODO**: check why True is not work in Ray trainer
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:253` **TODO**: init using device mesh (not support hybrid engine now)
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:84` **TODO**: we don't need driver
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:295` **XXX**: will hang in HF setting without megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py:37` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py:147` **TODO**: check usagecontext
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py:345` **TODO**: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:68` **TODO**: check megatron
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:255` **TODO**: need to implement a general way to deal with prefix
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:181` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:229` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:284` **FIXME**: Remove this after Mixtral is updated
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:293` **HACK**: the _get_logits function in vllm v0.4.2
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:144` **TODO**: check why True is not work in Ray trainer
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:172` **TODO**: check why True is not work in Ray trainer
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:185` **TODO**: init using device mesh (not support hybrid engine now)
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:205` **HACK**: from the open-sourced version without
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:257` **TODO**: check why True is not work in Ray trainer
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:262` **TODO**: init using device mesh (not support hybrid engine now)
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:92` **TODO**: we don't need driver
-- `luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:303` **XXX**: will hang in HF setting without megatron
-- `luffy/verl/verl/trainer/fsdp_sft_trainer.py:77` **TODO**: add checkpoint manager
-- `luffy/verl/verl/trainer/fsdp_sft_trainer.py:140` **TODO**: (zhangchi.usc1992):
-- `luffy/verl/verl/trainer/fsdp_sft_trainer.py:316` **TODO**: add a unified tracking
-- `luffy/verl/verl/trainer/fsdp_sft_trainer.py:333` **TODO**: (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:129` **TODO**: add other ways to estimate advantages
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:207` **TODO**: add response length
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:330` **TODO**: support each role have individual ray_worker_group_cls,
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:379` **TODO**: we have to make sure the batch size is divisible by the dp size
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:632` **TODO**: check path
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:667` **TODO**: from remote not implemented yet
-- `luffy/verl/verl/trainer/ppo/ray_trainer.py:880` **TODO**: make a canonical logger that supports various backend
-- `luffy/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:101` **TODO**: shall we remove previous ckpt every save?
-- `luffy/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:135` **TODO**: address optimizer is None
-- `luffy/verl/verl/utils/model.py:164` **TODO**: we can make this faster
-- `luffy/verl/verl/utils/model.py:272` **TODO**: to find a better way to load mistral7b-rm lm_head
-- `luffy/verl/verl/utils/torch_functional.py:162` **TODO**: optimize this. Technically, we only need one broadcast
-- `luffy/verl/verl/utils/torch_functional.py:171` **TODO**: optimize this.
-- `luffy/verl/verl/utils/torch_functional.py:362` **TODO**: add them back
-- `luffy/verl/verl/workers/actor/megatron_actor.py:158` **TODO**: (zhangchi.usc1992): actually, this function should only return log_prob and this logic should be handled by user outside
-- `luffy/verl/verl/workers/actor/megatron_actor.py:225` **TODO**: actually, we just need to control the sampling order.
-- `luffy/verl/verl/workers/actor/megatron_actor.py:301` **TODO**: we may use the new schedule instead
-- `luffy/verl/verl/workers/critic/megatron_critic.py:176` **TODO**: we may use the new schedule instead
-- `luffy/verl/verl/workers/fsdp_workers.py:117` **TODO**: it seems that manual offload is slowly than FSDP offload
-- `luffy/verl/verl/workers/fsdp_workers.py:233` **TODO**: add transformer policy
-- `luffy/verl/verl/workers/fsdp_workers.py:252` **TODO**: add more optimizer args into config
-- `luffy/verl/verl/workers/fsdp_workers.py:289` **TODO**: a sharding manager that do nothing?
-- `luffy/verl/verl/workers/fsdp_workers.py:416` **TODO**: here, we should return all metrics
-- `luffy/verl/verl/workers/megatron_workers.py:57` **FIXME**: torch cumsum not support deterministic (used in vllm sampler),
-- `luffy/verl/verl/workers/megatron_workers.py:204` **TODO**: add more optimizer args into config
-- `luffy/verl/verl/workers/megatron_workers.py:338` **TODO**: here, we should return all metrics
-- `luffy/verl/verl/workers/megatron_workers.py:478` **TODO**: support vpp here
-- `luffy/verl/verl/workers/megatron_workers.py:507` **TODO**: add more optimizer args into config
-- `luffy/verl/verl/workers/megatron_workers.py:667` **TODO**: add more optimizer args into config
-- `luffy/verl/verl/workers/megatron_workers.py:720` **TODO**: reward model use itself tokenizer instead of sft tokenizer
-- `luffy/verl/verl/workers/reward_model/megatron/reward_model.py:192` **TODO**: actually, we just need to control the sampling order.
-- `luffy/verl/verl/workers/reward_model/megatron/reward_model.py:233` **TODO**: we may use the new schedule instead
-- `luffy/verl/verl/workers/rollout/hf_rollout.py:16` **TODO**: refactor this class. Currently, it will hang when using FSDP HybridShard. We should actually create a single GPU model.
-- `luffy/verl/verl/workers/rollout/hf_rollout.py:98` **TODO**: filter out the seq with no answers like ds-chat
-- `luffy/verl/verl/workers/sharding_manager/fsdp_ulysses.py:49` **TODO**: check how to set seed for each model
-- `luffy/verl/verl/workers/sharding_manager/fsdp_ulysses.py:56` **TODO**: check how to set seed for each model
-- `luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py:82` **TODO**: offload FSDP model weights
-- `luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py:113` **TODO**: Current impl doesn't consider FSDP with torch micro-dp
-- `luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py:122` **TODO**: Current impl doesn't consider FSDP with torch micro-dp
-- `luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py:130` **TODO**: shall we build a micro_dp group for vllm when integrating with vLLM?
-- `luffy/verl/verl/workers/sharding_manager/megatron_vllm.py:76` **TODO**: after binding to the memory buffer, we can load the checkpoint here
+1. **ExGRPO/exgrpo/verl/tests/ray/test_high_level_scheduling_api.py** (line 25)
+   - pass *args and **kwargs is bug prone and not very convincing
+2. **ExGRPO/exgrpo/verl/tests/ray/test_worker_group_basics.py** (line 43)
+   - pass *args and **kwargs is bug prone and not very convincing
+3. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 54)
+   - support FSDP hybrid shard for larger model
+4. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 83)
+   - it seems that manual offload is slowly than FSDP offload
+5. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 123)
+   - 1. support create from random initialized model. 2. Support init with FSDP directly
+6. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 199)
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+7. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 207)
+   - add transformer policy
+8. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 226)
+   - add more optimizer args into config
+9. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 252)
+   - support FSDP hybrid shard for larger model
+10. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 263)
+   - a sharding manager that do nothing?
+11. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 426)
+   - here, we should return all metrics
+12. **ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py** (line 586)
+   - support DCP and save sharded checkpoints
+13. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py** (line 90)
+   - add other ways to estimate advantages
+14. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py** (line 150)
+   - support each role have individual ray_worker_group_cls,
+15. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py** (line 197)
+   - we have to make sure the batch size is divisible by the dp size
+16. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py** (line 508)
+   - make a canonical logger that supports various backend
+17. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py** (line 552)
+   - add response length
+18. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 63)
+   - we have to make sure the batch size is divisible by the dp size
+19. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 437)
+   - make a canonical logger that supports various backend
+20. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 592)
+   - check path
+21. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 628)
+   - from remote not implemented yet
+22. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_experience.py** (line 64)
+   - support each role have individual ray_worker_group_cls,
+23. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_experience.py** (line 534)
+   - make a canonical logger that supports various backend
+24. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_helper.py** (line 40)
+   - add other ways to estimate advantages
+25. **ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_helper.py** (line 97)
+   - add response length
+26. **ExGRPO/exgrpo/verl/verl/mix_src/mix_vllm_rollout.py** (line 43)
+   - implementation needed
+27. **ExGRPO/exgrpo/verl/verl/mix_src/mix_vllm_rollout_exp.py** (line 43)
+   - implementation needed
+28. **ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_attention.py** (line 380)
+   - llama does not have dropout in the config??
+29. **ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py** (line 78)
+   - add sequence parallel operator reduce_scatter here
+30. **ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py** (line 86)
+   - add sequence parallel operator all_gather here
+31. **ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py** (line 90)
+   - add sequence parallel operator reduce_scatter here
+32. **ExGRPO/exgrpo/verl/verl/models/llama/megatron/modeling_llama_megatron.py** (line 330)
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+33. **ExGRPO/exgrpo/verl/verl/models/llama/megatron/modeling_llama_megatron.py** (line 588)
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+34. **ExGRPO/exgrpo/verl/verl/models/registry.py** (line 21)
+   - HF may supported more than listed here, we should add more after testing
+35. **ExGRPO/exgrpo/verl/verl/models/transformers/llama.py** (line 88)
+   - These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
+36. **ExGRPO/exgrpo/verl/verl/protocol.py** (line 164)
+   - (zhangchi.usc1992) add consistency check
+37. **ExGRPO/exgrpo/verl/verl/protocol.py** (line 260)
+   - we can actually lift this restriction if needed
+38. **ExGRPO/exgrpo/verl/verl/protocol.py** (line 346)
+   - (zhangchi.usc1992) whether to copy
+39. **ExGRPO/exgrpo/verl/verl/single_controller/ray/base.py** (line 439)
+   - create a class with customizable name
+40. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py** (line 64)
+   - delete the unused args
+41. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py** (line 147)
+   - Support fine-grained seeds (e.g., seed per request).
+42. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py** (line 237)
+   - maybe we can hack the autoregressive logics without only apply post process for better performance
+43. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py** (line 241)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+44. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py** (line 257)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+45. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 99)
+   - Print more configs in debug mode.
+46. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 101)
+   - currently is hfconfig
+47. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 112)
+   - maybe we can choose init here or from arguments
+48. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 145)
+   - check get_lora_tokenizer func
+49. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 586)
+   - check this input
+50. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 661)
+   - we may not need to decode
+51. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py** (line 67)
+   - latest commit in vllm fix awq for this function and add load_weights
+52. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py** (line 96)
+   - (pad to be divided by 4)
+53. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py** (line 224)
+   - Change the get_logits part to a separate stage.
+54. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py** (line 56)
+   - the lora tokenizer is also passed, but may be different
+55. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py** (line 62)
+   - check megatron
+56. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py** (line 84)
+   - need to implement a general way to deal with prefix
+57. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py** (line 109)
+   - do not use cupy
+58. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py** (line 209)
+   - Profile swapping overhead and optimize if needed.
+59. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py** (line 291)
+   - maybe we should also flag the megatron is initialized
+60. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 44)
+   - implementation needed
+61. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 109)
+   - delete the unused args
+62. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 192)
+   - Support fine-grained seeds (e.g., seed per request).
+63. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 257)
+   - spec config
+64. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/config.py** (line 136)
+   - for multimodal model
+65. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py** (line 81)
+   - implementation needed
+66. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py** (line 268)
+   - maybe we can hack the autoregressive logics without only apply post process for better performance
+67. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py** (line 272)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+68. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py** (line 288)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+69. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 128)
+   - Print more configs in debug mode.
+70. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 130)
+   - currently is hfconfig
+71. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 143)
+   - maybe we can choose init here or from arguments
+72. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 145)
+   - check tokenizer class
+73. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 153)
+   - don't know what's the usage
+74. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 228)
+   - add for verl but we may not tokenizer in Rollout
+75. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 237)
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+76. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 67)
+   - check megatron
+77. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 254)
+   - need to implement a general way to deal with prefix
+78. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 272)
+   - latest commit in vllm fix awq for this function and add load_weights
+79. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 325)
+   - (pad to be divided by 4)
+80. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 337)
+   - remove dependencies from megatron
+81. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py** (line 141)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+82. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py** (line 226)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+83. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py** (line 274)
+   - perform sampling on rank 0
+84. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py** (line 236)
+   - this will hang
+85. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py** (line 245)
+   - will hang when used with device mesh
+86. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py** (line 247)
+   - init using device mesh
+87. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py** (line 62)
+   - verl not support speculative decode now
+88. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py** (line 208)
+   - not implemented async executor yet
+89. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py** (line 61)
+   - the lora tokenizer is also passed, but may be different
+90. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py** (line 30)
+   - check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+91. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py** (line 270)
+   - check whether need this
+92. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 53)
+   - check this
+93. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 54)
+   - check this
+94. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 143)
+   - delete the unused args
+95. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 226)
+   - Support fine-grained seeds (e.g., seed per request).
+96. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 366)
+   - spec config
+97. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/config.py** (line 191)
+   - check whether this is necessary
+98. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py** (line 32)
+   - implementation needed
+99. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py** (line 148)
+   - check usagecontext
+100. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py** (line 205)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+101. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py** (line 221)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+102. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 143)
+   - Print more configs in debug mode.
+103. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 160)
+   - maybe we can choose init here or from arguments
+104. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 262)
+   - add for verl but we may not tokenizer in Rollout
+105. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 271)
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+106. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py** (line 67)
+   - check megatron
+107. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py** (line 254)
+   - need to implement a general way to deal with prefix
+108. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py** (line 272)
+   - latest commit in vllm fix awq for this function and add load_weights
+109. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py** (line 152)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+110. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py** (line 239)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+111. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 94)
+   - deviate from the v0.5.4, not pp now
+112. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 138)
+   - check why True is not work in Ray trainer
+113. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 165)
+   - check why True is not work in Ray trainer
+114. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 177)
+   - init using device mesh (not support hybrid engine now)
+115. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 249)
+   - check why True is not work in Ray trainer
+116. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 253)
+   - init using device mesh (not support hybrid engine now)
+117. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py** (line 65)
+   - verl not support speculative decode now
+118. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py** (line 243)
+   - not implemented async executor yet
+119. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py** (line 61)
+   - the lora tokenizer is also passed, but may be different
+120. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 29)
+   - check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+121. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 84)
+   - we don't need driver
+122. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 103)
+   - set correct model runner class
+123. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 301)
+   - check whether need this
+124. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py** (line 29)
+   - implementation needed
+125. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py** (line 147)
+   - check usagecontext
+126. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py** (line 170)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+127. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py** (line 186)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+128. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py** (line 174)
+   - Print more configs in debug mode.
+129. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py** (line 336)
+   - add for verl but we may not tokenizer in Rollout
+130. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py** (line 345)
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+131. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py** (line 68)
+   - check megatron
+132. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py** (line 255)
+   - need to implement a general way to deal with prefix
+133. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py** (line 273)
+   - latest commit in vllm fix awq for this function and add load_weights
+134. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py** (line 170)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+135. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py** (line 273)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+136. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 97)
+   - deviate from the v0.5.4, not pp now
+137. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 144)
+   - check why True is not work in Ray trainer
+138. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 172)
+   - check why True is not work in Ray trainer
+139. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 185)
+   - init using device mesh (not support hybrid engine now)
+140. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 257)
+   - check why True is not work in Ray trainer
+141. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 262)
+   - init using device mesh (not support hybrid engine now)
+142. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py** (line 73)
+   - verl not support speculative decode now
+143. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py** (line 246)
+   - not implemented async executor yet
+144. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 33)
+   - check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+145. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 92)
+   - we don't need driver
+146. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 110)
+   - set correct model runner class
+147. **ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 311)
+   - check whether need this
+148. **ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py** (line 77)
+   - add checkpoint manager
+149. **ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py** (line 140)
+   - implementation needed
+150. **ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py** (line 316)
+   - add a unified tracking
+151. **ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py** (line 333)
+   - (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.
+152. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 129)
+   - add other ways to estimate advantages
+153. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 207)
+   - add response length
+154. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 330)
+   - support each role have individual ray_worker_group_cls,
+155. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 379)
+   - we have to make sure the batch size is divisible by the dp size
+156. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 632)
+   - check path
+157. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 667)
+   - from remote not implemented yet
+158. **ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py** (line 885)
+   - make a canonical logger that supports various backend
+159. **ExGRPO/exgrpo/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py** (line 101)
+   - shall we remove previous ckpt every save?
+160. **ExGRPO/exgrpo/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py** (line 135)
+   - address optimizer is None
+161. **ExGRPO/exgrpo/verl/verl/utils/hdfs_io.py** (line 67)
+   - implementation needed
+162. **ExGRPO/exgrpo/verl/verl/utils/hdfs_io.py** (line 102)
+   - implementation needed
+163. **ExGRPO/exgrpo/verl/verl/utils/megatron_utils.py** (line 202)
+   - check how to disable megatron timers
+164. **ExGRPO/exgrpo/verl/verl/utils/model.py** (line 164)
+   - we can make this faster
+165. **ExGRPO/exgrpo/verl/verl/utils/model.py** (line 272)
+   - to find a better way to load mistral7b-rm lm_head
+166. **ExGRPO/exgrpo/verl/verl/utils/torch_functional.py** (line 375)
+   - add them back
+167. **ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py** (line 158)
+   - actually, this function should only return log_prob and this logic should be handled by user outside
+168. **ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py** (line 225)
+   - actually, we just need to control the sampling order.
+169. **ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py** (line 301)
+   - we may use the new schedule instead
+170. **ExGRPO/exgrpo/verl/verl/workers/critic/megatron_critic.py** (line 176)
+   - we may use the new schedule instead
+171. **ExGRPO/exgrpo/verl/verl/workers/critic/megatron_critic.py** (line 176)
+   - we may use the new schedule instead
+172. **ExGRPO/exgrpo/verl/verl/workers/critic/megatron_critic.py** (line 176)
+   - we may use the new schedule instead
+173. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 88)
+   - support FSDP hybrid shard for larger model
+174. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 88)
+   - support FSDP hybrid shard for larger model
+175. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 88)
+   - support FSDP hybrid shard for larger model
+176. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 117)
+   - it seems that manual offload is slowly than FSDP offload
+177. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 117)
+   - it seems that manual offload is slowly than FSDP offload
+178. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 117)
+   - it seems that manual offload is slowly than FSDP offload
+179. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 157)
+   - 1. support create from random initialized model. 2. Support init with FSDP directly
+180. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 157)
+   - 1. support create from random initialized model. 2. Support init with FSDP directly
+181. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 157)
+   - 1. support create from random initialized model. 2. Support init with FSDP directly
+182. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 225)
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+183. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 225)
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+184. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 225)
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+185. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 233)
+   - add transformer policy
+186. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 233)
+   - add transformer policy
+187. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 233)
+   - add transformer policy
+188. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 252)
+   - add more optimizer args into config
+189. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 252)
+   - add more optimizer args into config
+190. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 252)
+   - add more optimizer args into config
+191. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 278)
+   - support FSDP hybrid shard for larger model
+192. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 278)
+   - support FSDP hybrid shard for larger model
+193. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 278)
+   - support FSDP hybrid shard for larger model
+194. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 289)
+   - a sharding manager that do nothing?
+195. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 289)
+   - a sharding manager that do nothing?
+196. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 289)
+   - a sharding manager that do nothing?
+197. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 416)
+   - here, we should return all metrics
+198. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 416)
+   - here, we should return all metrics
+199. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 416)
+   - here, we should return all metrics
+200. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 811)
+   - we may need to extract it to dp_reward_model.py
+201. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 811)
+   - we may need to extract it to dp_reward_model.py
+202. **ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py** (line 811)
+   - we may need to extract it to dp_reward_model.py
+203. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 106)
+   - Currently, we only support reference model param offload
+204. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 106)
+   - Currently, we only support reference model param offload
+205. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 106)
+   - Currently, we only support reference model param offload
+206. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 204)
+   - add more optimizer args into config
+207. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 204)
+   - add more optimizer args into config
+208. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 204)
+   - add more optimizer args into config
+209. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 338)
+   - here, we should return all metrics
+210. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 338)
+   - here, we should return all metrics
+211. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 338)
+   - here, we should return all metrics
+212. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 444)
+   - support critic model offload
+213. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 444)
+   - support critic model offload
+214. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 444)
+   - support critic model offload
+215. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 478)
+   - support vpp here
+216. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 478)
+   - support vpp here
+217. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 478)
+   - support vpp here
+218. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 507)
+   - add more optimizer args into config
+219. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 507)
+   - add more optimizer args into config
+220. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 507)
+   - add more optimizer args into config
+221. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 667)
+   - add more optimizer args into config
+222. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 667)
+   - add more optimizer args into config
+223. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 667)
+   - add more optimizer args into config
+224. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 720)
+   - reward model use itself tokenizer instead of sft tokenizer
+225. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 720)
+   - reward model use itself tokenizer instead of sft tokenizer
+226. **ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py** (line 720)
+   - reward model use itself tokenizer instead of sft tokenizer
+227. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 145)
+   - check why is bfloat16
+228. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 145)
+   - check why is bfloat16
+229. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 145)
+   - check why is bfloat16
+230. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 192)
+   - actually, we just need to control the sampling order.
+231. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 192)
+   - actually, we just need to control the sampling order.
+232. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 192)
+   - actually, we just need to control the sampling order.
+233. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 233)
+   - we may use the new schedule instead
+234. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 233)
+   - we may use the new schedule instead
+235. **ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py** (line 233)
+   - we may use the new schedule instead
+236. **ExGRPO/exgrpo/verl/verl/workers/rollout/hf_rollout.py** (line 98)
+   - filter out the seq with no answers like ds-chat
+237. **ExGRPO/exgrpo/verl/verl/workers/rollout/hf_rollout.py** (line 98)
+   - filter out the seq with no answers like ds-chat
+238. **ExGRPO/exgrpo/verl/verl/workers/rollout/vllm_rollout/vllm_rollout.py** (line 43)
+   - implementation needed
+239. **ExGRPO/exgrpo/verl/verl/workers/rollout/vllm_rollout/vllm_rollout.py** (line 43)
+   - implementation needed
+240. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py** (line 49)
+   - check how to set seed for each model
+241. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py** (line 49)
+   - check how to set seed for each model
+242. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py** (line 56)
+   - check how to set seed for each model
+243. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py** (line 56)
+   - check how to set seed for each model
+244. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 82)
+   - offload FSDP model weights
+245. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 82)
+   - offload FSDP model weights
+246. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 113)
+   - Current impl doesn't consider FSDP with torch micro-dp
+247. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 113)
+   - Current impl doesn't consider FSDP with torch micro-dp
+248. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 122)
+   - Current impl doesn't consider FSDP with torch micro-dp
+249. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 122)
+   - Current impl doesn't consider FSDP with torch micro-dp
+250. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 130)
+   - shall we build a micro_dp group for vllm when integrating with vLLM?
+251. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 130)
+   - shall we build a micro_dp group for vllm when integrating with vLLM?
+252. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 76)
+   - after binding to the memory buffer, we can load the checkpoint here
+253. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 76)
+   - after binding to the memory buffer, we can load the checkpoint here
+254. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 253)
+   - this may not be true for FSDP -> vLLM
+255. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 253)
+   - this may not be true for FSDP -> vLLM
+256. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 323)
+   - (zhangchi.usc1992) We can consider copy non-tp weight to another infer buffer.
+257. **ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 323)
+   - (zhangchi.usc1992) We can consider copy non-tp weight to another infer buffer.
+258. **luffy/test.py** (line 1590)
+   - add smaller page sizes when https://github.com/Dao-AILab/flash-attention/pull/824 is merged
+259. **luffy/test.py** (line 1590)
+   - add smaller page sizes when https://github.com/Dao-AILab/flash-attention/pull/824 is merged
+260. **luffy/verl/examples/split_placement/split_monkey_patch.py** (line 141)
+   - make a canonical logger that supports various backend
+261. **luffy/verl/tests/e2e/check_results.py** (line 21)
+   - this function needs error handling
+262. **luffy/verl/tests/model/test_transformer.py** (line 22)
+   - add more models for test
+263. **luffy/verl/tests/model/test_transformer.py** (line 50)
+   - we can construct the position_ids_rmpad here
+264. **luffy/verl/tests/model/test_transformer.py** (line 111)
+   - we can construct the position_ids_rmpad here
+265. **luffy/verl/tests/model/test_transformers_ulysses.py** (line 34)
+   - add more models for test
+266. **luffy/verl/tests/model/test_transformers_ulysses.py** (line 81)
+   - we can construct the position_ids_rmpad here
+267. **luffy/verl/tests/model/test_transformers_ulysses.py** (line 159)
+   - we can construct the position_ids_rmpad here
+268. **luffy/verl/tests/ray/test_high_level_scheduling_api.py** (line 25)
+   - pass *args and **kwargs is bug prone and not very convincing
+269. **luffy/verl/tests/ray/test_worker_group_basics.py** (line 43)
+   - pass *args and **kwargs is bug prone and not very convincing
+270. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 54)
+   - support FSDP hybrid shard for larger model
+271. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 83)
+   - it seems that manual offload is slowly than FSDP offload
+272. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 123)
+   - 1. support create from random initialized model. 2. Support init with FSDP directly
+273. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 199)
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+274. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 207)
+   - add transformer policy
+275. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 226)
+   - add more optimizer args into config
+276. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 252)
+   - support FSDP hybrid shard for larger model
+277. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 263)
+   - a sharding manager that do nothing?
+278. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 391)
+   - here, we should return all metrics
+279. **luffy/verl/verl/mix_src/mix_fsdp_worker.py** (line 517)
+   - support DCP and save sharded checkpoints
+280. **luffy/verl/verl/mix_src/mix_trainer.py** (line 90)
+   - add other ways to estimate advantages
+281. **luffy/verl/verl/mix_src/mix_trainer.py** (line 168)
+   - support each role have individual ray_worker_group_cls,
+282. **luffy/verl/verl/mix_src/mix_trainer.py** (line 293)
+   - we have to make sure the batch size is divisible by the dp size
+283. **luffy/verl/verl/mix_src/mix_trainer.py** (line 599)
+   - make a canonical logger that supports various backend
+284. **luffy/verl/verl/mix_src/mix_trainer.py** (line 637)
+   - add response length
+285. **luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 63)
+   - we have to make sure the batch size is divisible by the dp size
+286. **luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 437)
+   - make a canonical logger that supports various backend
+287. **luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 592)
+   - check path
+288. **luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py** (line 628)
+   - from remote not implemented yet
+289. **luffy/verl/verl/mix_src/mix_vllm_rollout.py** (line 43)
+   - implementation needed
+290. **luffy/verl/verl/models/llama/megatron/layers/parallel_attention.py** (line 380)
+   - llama does not have dropout in the config??
+291. **luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py** (line 78)
+   - add sequence parallel operator reduce_scatter here
+292. **luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py** (line 86)
+   - add sequence parallel operator all_gather here
+293. **luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py** (line 90)
+   - add sequence parallel operator reduce_scatter here
+294. **luffy/verl/verl/models/llama/megatron/modeling_llama_megatron.py** (line 330)
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+295. **luffy/verl/verl/models/llama/megatron/modeling_llama_megatron.py** (line 588)
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+296. **luffy/verl/verl/models/registry.py** (line 21)
+   - HF may supported more than listed here, we should add more after testing
+297. **luffy/verl/verl/models/transformers/llama.py** (line 88)
+   - These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
+298. **luffy/verl/verl/protocol.py** (line 164)
+   - (zhangchi.usc1992) add consistency check
+299. **luffy/verl/verl/protocol.py** (line 260)
+   - we can actually lift this restriction if needed
+300. **luffy/verl/verl/protocol.py** (line 346)
+   - (zhangchi.usc1992) whether to copy
+301. **luffy/verl/verl/single_controller/ray/base.py** (line 439)
+   - create a class with customizable name
+302. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py** (line 64)
+   - delete the unused args
+303. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py** (line 147)
+   - Support fine-grained seeds (e.g., seed per request).
+304. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py** (line 237)
+   - maybe we can hack the autoregressive logics without only apply post process for better performance
+305. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py** (line 241)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+306. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py** (line 257)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+307. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 99)
+   - Print more configs in debug mode.
+308. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 101)
+   - currently is hfconfig
+309. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 112)
+   - maybe we can choose init here or from arguments
+310. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 145)
+   - check get_lora_tokenizer func
+311. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 586)
+   - check this input
+312. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py** (line 661)
+   - we may not need to decode
+313. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py** (line 67)
+   - latest commit in vllm fix awq for this function and add load_weights
+314. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py** (line 96)
+   - (pad to be divided by 4)
+315. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py** (line 224)
+   - Change the get_logits part to a separate stage.
+316. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py** (line 56)
+   - the lora tokenizer is also passed, but may be different
+317. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py** (line 62)
+   - check megatron
+318. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py** (line 84)
+   - need to implement a general way to deal with prefix
+319. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py** (line 109)
+   - do not use cupy
+320. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py** (line 209)
+   - Profile swapping overhead and optimize if needed.
+321. **luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py** (line 291)
+   - maybe we should also flag the megatron is initialized
+322. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 44)
+   - implementation needed
+323. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 109)
+   - delete the unused args
+324. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 192)
+   - Support fine-grained seeds (e.g., seed per request).
+325. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py** (line 257)
+   - spec config
+326. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/config.py** (line 136)
+   - for multimodal model
+327. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py** (line 81)
+   - implementation needed
+328. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py** (line 268)
+   - maybe we can hack the autoregressive logics without only apply post process for better performance
+329. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py** (line 272)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+330. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py** (line 288)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+331. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 128)
+   - Print more configs in debug mode.
+332. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 130)
+   - currently is hfconfig
+333. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 143)
+   - maybe we can choose init here or from arguments
+334. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 145)
+   - check tokenizer class
+335. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 153)
+   - don't know what's the usage
+336. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 228)
+   - add for verl but we may not tokenizer in Rollout
+337. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py** (line 237)
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+338. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 67)
+   - check megatron
+339. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 254)
+   - need to implement a general way to deal with prefix
+340. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 272)
+   - latest commit in vllm fix awq for this function and add load_weights
+341. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 325)
+   - (pad to be divided by 4)
+342. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py** (line 337)
+   - remove dependencies from megatron
+343. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py** (line 141)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+344. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py** (line 226)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+345. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py** (line 274)
+   - perform sampling on rank 0
+346. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py** (line 236)
+   - this will hang
+347. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py** (line 245)
+   - will hang when used with device mesh
+348. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py** (line 247)
+   - init using device mesh
+349. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py** (line 62)
+   - verl not support speculative decode now
+350. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py** (line 208)
+   - not implemented async executor yet
+351. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py** (line 61)
+   - the lora tokenizer is also passed, but may be different
+352. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py** (line 30)
+   - check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+353. **luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py** (line 270)
+   - check whether need this
+354. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 53)
+   - check this
+355. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 54)
+   - check this
+356. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 143)
+   - delete the unused args
+357. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 226)
+   - Support fine-grained seeds (e.g., seed per request).
+358. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py** (line 366)
+   - spec config
+359. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/config.py** (line 191)
+   - check whether this is necessary
+360. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py** (line 32)
+   - implementation needed
+361. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py** (line 148)
+   - check usagecontext
+362. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py** (line 205)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+363. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py** (line 221)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+364. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 143)
+   - Print more configs in debug mode.
+365. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 160)
+   - maybe we can choose init here or from arguments
+366. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 262)
+   - add for verl but we may not tokenizer in Rollout
+367. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py** (line 271)
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+368. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py** (line 67)
+   - check megatron
+369. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py** (line 254)
+   - need to implement a general way to deal with prefix
+370. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py** (line 272)
+   - latest commit in vllm fix awq for this function and add load_weights
+371. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py** (line 152)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+372. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py** (line 239)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+373. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 94)
+   - deviate from the v0.5.4, not pp now
+374. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 138)
+   - check why True is not work in Ray trainer
+375. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 165)
+   - check why True is not work in Ray trainer
+376. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 177)
+   - init using device mesh (not support hybrid engine now)
+377. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 249)
+   - check why True is not work in Ray trainer
+378. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py** (line 253)
+   - init using device mesh (not support hybrid engine now)
+379. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py** (line 65)
+   - verl not support speculative decode now
+380. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py** (line 243)
+   - not implemented async executor yet
+381. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py** (line 61)
+   - the lora tokenizer is also passed, but may be different
+382. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 29)
+   - check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+383. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 84)
+   - we don't need driver
+384. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 103)
+   - set correct model runner class
+385. **luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py** (line 301)
+   - check whether need this
+386. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py** (line 29)
+   - implementation needed
+387. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py** (line 147)
+   - check usagecontext
+388. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py** (line 170)
+   - we can optimize it by making the dataloader yield List[int] without padding.
+389. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py** (line 186)
+   - can be optimzied by rewrite the Sampler._get_logprobs() logits
+390. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py** (line 174)
+   - Print more configs in debug mode.
+391. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py** (line 336)
+   - add for verl but we may not tokenizer in Rollout
+392. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py** (line 345)
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+393. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py** (line 68)
+   - check megatron
+394. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py** (line 255)
+   - need to implement a general way to deal with prefix
+395. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py** (line 273)
+   - latest commit in vllm fix awq for this function and add load_weights
+396. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py** (line 170)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+397. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py** (line 273)
+   - This is a hack, we need to register the load_weight() func for each model in vllm
+398. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 97)
+   - deviate from the v0.5.4, not pp now
+399. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 144)
+   - check why True is not work in Ray trainer
+400. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 172)
+   - check why True is not work in Ray trainer
+401. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 185)
+   - init using device mesh (not support hybrid engine now)
+402. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 257)
+   - check why True is not work in Ray trainer
+403. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py** (line 262)
+   - init using device mesh (not support hybrid engine now)
+404. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py** (line 73)
+   - verl not support speculative decode now
+405. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py** (line 246)
+   - not implemented async executor yet
+406. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 33)
+   - check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+407. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 92)
+   - we don't need driver
+408. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 110)
+   - set correct model runner class
+409. **luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py** (line 311)
+   - check whether need this
+410. **luffy/verl/verl/trainer/fsdp_sft_trainer.py** (line 77)
+   - add checkpoint manager
+411. **luffy/verl/verl/trainer/fsdp_sft_trainer.py** (line 140)
+   - implementation needed
+412. **luffy/verl/verl/trainer/fsdp_sft_trainer.py** (line 316)
+   - add a unified tracking
+413. **luffy/verl/verl/trainer/fsdp_sft_trainer.py** (line 333)
+   - (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.
+414. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 129)
+   - add other ways to estimate advantages
+415. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 207)
+   - add response length
+416. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 330)
+   - support each role have individual ray_worker_group_cls,
+417. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 379)
+   - we have to make sure the batch size is divisible by the dp size
+418. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 632)
+   - check path
+419. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 667)
+   - from remote not implemented yet
+420. **luffy/verl/verl/trainer/ppo/ray_trainer.py** (line 880)
+   - make a canonical logger that supports various backend
+421. **luffy/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py** (line 101)
+   - shall we remove previous ckpt every save?
+422. **luffy/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py** (line 135)
+   - address optimizer is None
+423. **luffy/verl/verl/utils/hdfs_io.py** (line 67)
+   - implementation needed
+424. **luffy/verl/verl/utils/hdfs_io.py** (line 102)
+   - implementation needed
+425. **luffy/verl/verl/utils/megatron_utils.py** (line 202)
+   - check how to disable megatron timers
+426. **luffy/verl/verl/utils/model.py** (line 164)
+   - we can make this faster
+427. **luffy/verl/verl/utils/model.py** (line 272)
+   - to find a better way to load mistral7b-rm lm_head
+428. **luffy/verl/verl/utils/torch_functional.py** (line 362)
+   - add them back
+429. **luffy/verl/verl/workers/actor/megatron_actor.py** (line 158)
+   - actually, this function should only return log_prob and this logic should be handled by user outside
+430. **luffy/verl/verl/workers/actor/megatron_actor.py** (line 225)
+   - actually, we just need to control the sampling order.
+431. **luffy/verl/verl/workers/actor/megatron_actor.py** (line 301)
+   - we may use the new schedule instead
+432. **luffy/verl/verl/workers/critic/megatron_critic.py** (line 176)
+   - we may use the new schedule instead
+433. **luffy/verl/verl/workers/fsdp_workers.py** (line 88)
+   - support FSDP hybrid shard for larger model
+434. **luffy/verl/verl/workers/fsdp_workers.py** (line 117)
+   - it seems that manual offload is slowly than FSDP offload
+435. **luffy/verl/verl/workers/fsdp_workers.py** (line 157)
+   - 1. support create from random initialized model. 2. Support init with FSDP directly
+436. **luffy/verl/verl/workers/fsdp_workers.py** (line 225)
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+437. **luffy/verl/verl/workers/fsdp_workers.py** (line 233)
+   - add transformer policy
+438. **luffy/verl/verl/workers/fsdp_workers.py** (line 252)
+   - add more optimizer args into config
+439. **luffy/verl/verl/workers/fsdp_workers.py** (line 278)
+   - support FSDP hybrid shard for larger model
+440. **luffy/verl/verl/workers/fsdp_workers.py** (line 289)
+   - a sharding manager that do nothing?
+441. **luffy/verl/verl/workers/fsdp_workers.py** (line 416)
+   - here, we should return all metrics
+442. **luffy/verl/verl/workers/fsdp_workers.py** (line 811)
+   - we may need to extract it to dp_reward_model.py
+443. **luffy/verl/verl/workers/megatron_workers.py** (line 106)
+   - Currently, we only support reference model param offload
+444. **luffy/verl/verl/workers/megatron_workers.py** (line 204)
+   - add more optimizer args into config
+445. **luffy/verl/verl/workers/megatron_workers.py** (line 338)
+   - here, we should return all metrics
+446. **luffy/verl/verl/workers/megatron_workers.py** (line 444)
+   - support critic model offload
+447. **luffy/verl/verl/workers/megatron_workers.py** (line 478)
+   - support vpp here
+448. **luffy/verl/verl/workers/megatron_workers.py** (line 507)
+   - add more optimizer args into config
+449. **luffy/verl/verl/workers/megatron_workers.py** (line 667)
+   - add more optimizer args into config
+450. **luffy/verl/verl/workers/megatron_workers.py** (line 720)
+   - reward model use itself tokenizer instead of sft tokenizer
+451. **luffy/verl/verl/workers/reward_model/megatron/reward_model.py** (line 145)
+   - check why is bfloat16
+452. **luffy/verl/verl/workers/reward_model/megatron/reward_model.py** (line 192)
+   - actually, we just need to control the sampling order.
+453. **luffy/verl/verl/workers/reward_model/megatron/reward_model.py** (line 233)
+   - we may use the new schedule instead
+454. **luffy/verl/verl/workers/rollout/hf_rollout.py** (line 98)
+   - filter out the seq with no answers like ds-chat
+455. **luffy/verl/verl/workers/rollout/vllm_rollout/vllm_rollout.py** (line 43)
+   - implementation needed
+456. **luffy/verl/verl/workers/sharding_manager/fsdp_ulysses.py** (line 49)
+   - check how to set seed for each model
+457. **luffy/verl/verl/workers/sharding_manager/fsdp_ulysses.py** (line 56)
+   - check how to set seed for each model
+458. **luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 82)
+   - offload FSDP model weights
+459. **luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 113)
+   - Current impl doesn't consider FSDP with torch micro-dp
+460. **luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 122)
+   - Current impl doesn't consider FSDP with torch micro-dp
+461. **luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py** (line 130)
+   - shall we build a micro_dp group for vllm when integrating with vLLM?
+462. **luffy/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 76)
+   - after binding to the memory buffer, we can load the checkpoint here
+463. **luffy/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 253)
+   - this may not be true for FSDP -> vLLM
+464. **luffy/verl/verl/workers/sharding_manager/megatron_vllm.py** (line 323)
+   - (zhangchi.usc1992) We can consider copy non-tp weight to another infer buffer.
 
 
----
-
-
-# 🎉News
-- **[2026/01/26]** 🎉 ExGRPO has been accepted to **ICLR 2026**!
-- **[2025/10/04]** 🚀 Introducing [ExGRPO](https://github.com/ElliottYan/LUFFY/tree/main/ExGRPO), a new variant that boosts performance by **learning from the model’s own off-policy experience**, without relying on external guidance.
-- **[2025/09/19]** 🎉 LUFFY has been accepted to **NeurIPS 2025**!
-- **[2025/05/30]** We integrate the implementation and scripts of other off-policy learning methods including SFT, SFT+RL and RL w/ SFT Loss (multi-task learning).
-- **[2025/05/21]** We have updated the paper [version](https://arxiv.org/abs/2504.14945), which re-evaluates all models using a more accurate verifier and adds comparisons with other off-policy learning methods, including RL with SFT Loss and SFT+RL.
-- **[2025/04/23]** Our paper now trending on [alphaXiv](https://www.alphaxiv.org/abs/2504.14945)! We welcome feedback and discussion.
-- **[2025/04/23]** 🎉 Ranked **#1** of the day on [Huggingface Daily Papers](https://huggingface.co/papers/2504.14945).
-- **[2025/04/20]** LUFFY paper available on [arXiv](http://arxiv.org/abs/2504.14945). 
-
-<!-- - **[2025/04/20]** The models and datasets are released on [HuggingFace](https://huggingface.co/collections/Elliott/luffy-rl-6804e1f5d1ebe66ba8ac92f4).
-- **[2025/04/20]** LUFFY codebase is released along with evaluation scripts. Try it out! -->
-
----
-
-# 📖Introduction
-
-LUFFY is a reinforcement learning framework that bridges the gap between zero-RL and imitation learning by incorporating off-policy reasoning traces into the training process. Built upon GRPO, LUFFY combines on-policy rollouts with off-policy demonstrations during advantage estimation and introduces **policy shaping** via regularized importance sampling to emphasize low-probability yet crucial actions.
-
-![overview](./figures/luffy_performance.jpg)
-
-### Key Highlights:
-- **Off-Policy Guidance:** Seamlessly integrates external reasoning traces to bootstrap learning from stronger models.
-- **Dynamic Balance:** Learns when to imitate and when to explore, adapting over the course of training.
-- **Policy Shaping:** Emphasizes important actions often ignored in standard policy gradients, enabling better generalization.
-
-
-
----
-
-# ✨Getting Started
-
-## Installation
-
-You can install LUFFY dependencies by running the following commands:
-```bash
-conda create -n luffy python=3.10
-conda activate luffy
-cd luffy
-pip install -r requirements.txt
-pip install -e .
-cd verl
-pip install -e .
-```
-
-### Update 9.8
-Recently, we find the deprecation of pyairports caused a lot of environment issues. Thus, we now provide a bit more complicated way for installing the environment. 
-```bash
-conda create -n luffy python=3.10
-conda activate luffy
-pip install airports-py
-git clone https://github.com/dottxt-ai/outlines.git
-cd outlines
-git checkout 0.0.46
-pip install .
-cd ../luffy
-pip install -r requirements.v2.txt
-pip install -e .
-cd verl
-pip install -e .
-```
-
-
-If you encounter issues when installing flash-attn, we recommend you to install it here 
-[flash-attn](https://github.com/Dao-AILab/flash-attention/releases/tag/v2.7.3). For example, we use this version. 
-```bash
-wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
-pip install flash_attn-2.7.3+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
-```
-
-## Repo Structure
-
-This repository includes:
-
-- `luffy`: Codes for training LUFFY using off-policy reasoning traces. Our main code changes are in luffy/verl/verl/mix_src.
-- `data`: Data and code for training and evaluating LUFFY. 
-- `exp_scripts`: Example script to train LUFFY.
-- `eval_scripts`: Evaluation scripts on math and out-of-distribution benchmarks.
-- `ExGRPO`: Implementation and notes for ExGRPO, which leverages off-policy experience replay to further boost performance without external guidance.
-
-LUFFY is built on top of the GRPO framework and supports plug-and-play integration with off-policy traces from models such as DeepSeek-R1.
-
----
-
-
-
-
-
-# 🔧Usage
-
-## Data Preparation
-You need to first run the data preparation script to get the training data in parquet format.
-```bash
-cd data
-python prepare_train.py
-```
-
-## Training
-
-We provide an example script to train LUFFY on our subset of OpenR1-Math-220k. You can run the following command to train LUFFY:
-
-```bash
-  cd exp_scripts
-  bash train.sh
-```
-
-## Other Off-Policy Baselines
-### SFT
-First clone the OpenRLHF repository and prepare the data to SFT format. *(We plan to integrate the SFT pipeline directly into LUFFY in the near future.)*
-```bash
-git clone https://github.com/OpenRLHF/OpenRLHF
-cd data
-python prepare_sft.py
-```
-Then, you can run the SFT training command. 
-```
-RESULT_DIR="Your result directory"
-DATA_DIR="Your data directory"
-WANDB_KEY="Your Wandb Key"
-
-MODEL_PATH=Elliott/Qwen2.5-Math-7B-16k-think
-MASTER_ADDR=`scontrol show hostname $SLURM_JOB_NODELIST | head -n1`
-MASTER_PORT=$((RANDOM % 101 + 20000))
-DEVICES="0,1,2,3,4,5,6,7"
-deepspeed --master_port=$MASTER_PORT --master_addr=$MASTER_ADDR --include localhost:$DEVICES --module openrlhf.cli.train_sft \
-   --max_len 16384 \
-   --dataset $DATA_DIR \
-   --input_key prompt \
-   --output_key target \
-   --train_batch_size 64 \
-   --apply_chat_template \
-   --micro_train_batch_size 1 \
-   --max_samples 500000 \
-   --pretrain $MODEL_PATH \
-   --save_path $RESULT_DIR \
-   --logging_steps 1 \
-   --eval_steps -1 \
-   --zero_stage 2 \
-   --max_epochs 3 \
-   --adam_offload \
-   --packing_samples \
-   --bf16 \
-   --flash_attn \
-   --save_hf_ckpt \
-   --learning_rate 5e-5 \
-   --lr_warmup_ratio 0.1 \
-   --wandb_project r1_sft_distill \
-   --wandb_run_name qwen-7b-base-sft \
-   --use_wandb $WANDB_KEY \
-   --gradient_checkpointing
-```
-
-
-### RL w/ SFT Loss
-```bash
-  cd exp_scripts
-  bash train_rl_sft_loss.sh
-```
-
-### SFT + RL
-We use heldout data for RL training, following previous works like PRIME.
-```bash
-  cd data
-  python prepare_train_sft_rl.py
-  cd ../exp_scripts
-  bash train_sft_rl.sh
-```
-
-## Inference
-
-Here’s an example of using LUFFY for inference:
-
-<details>
-<summary>Click to view inference example</summary>
-
-```python
-from transformers import AutoTokenizer
-from vllm import LLM, SamplingParams
-
-model_path="Elliott/LUFFY-Qwen-Math-7B-Zero"
-
-question = "which number is larger? 9.11 or 9.9?"
-
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-messages = [{"role": "user", "content": question}]
-chat = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-
-llm = LLM(model=model_path)
-params = SamplingParams(temperature=0.6, max_tokens=8192)
-outputs = llm.generate([chat], params)
-print(outputs[0].outputs[0].text)
-```
-
-</details>
-
-
-## Models
-
-| **Model**                          | **Huggingface** |  **Base Model** |
-|-----------------------------------|------------------|------------------|
-| LUFFY-Qwen-Math-7B-Zero | https://huggingface.co/Elliott/LUFFY-Qwen-Math-7B-Zero |  Qwen2.5-Math-7B |
-| LUFFY-Qwen-Math-7B-SFT | https://huggingface.co/Elliott/Qwen2.5-Math-7B-SFT | Qwen2.5-Math-7B |
-| LUFFY-Qwen-Math-7B-SFT-RL | https://huggingface.co/Elliott/Qwen2.5-Math-7B-SFT-RL | Qwen2.5-Math-7B |
-| LUFFY-Qwen-Math-1.5B-Zero | https://huggingface.co/Elliott/LUFFY-Qwen-Math-1.5B-Zero | Qwen2.5-Math-1.5B |
-| LUFFY-Qwen-Instruct-7B | https://huggingface.co/Elliott/LUFFY-Qwen-Instruct-7B | Qwen2.5-7B-Instruct |
-
----
-
-# 📃Evaluation
-
-## Reproducing the Results 
-We currently support automated evaluation on six widely used mathematical reasoning benchmarks (AIME24/25, AMC, MATH-500, Minerva, and Olympiad) and three out-of-distribution tasks (ARC-c, GPQA-diamond, and MMLU-pro). The platform provides specialized system prompts for a range of RL models, including LUFFY, SimpleRL, OpenReasoner, PRIME, and OAT.
-
-You can reproduce our results by running the following commands:
-```bash
-ROOT=YOUR_ROOT_PATH
-DATA=$ROOT/data/valid.all.parquet
-
-OUTPUT_DIR=./results/
-mkdir -p $OUTPUT_DIR
-
-# If you want to evaluate other models, you can change the model path and name.
-MODEL_PATH=Elliott/LUFFY-Qwen-Math-7B-Zero
-MODEL_NAME=luffy
-
-if [ $MODEL_NAME == "eurus-2-7b-prime-zero" ]; then
-  TEMPLATE=prime
-elif [ $MODEL_NAME == "simple-rl-zero" ]; then
-  TEMPLATE=qwen
-else
-  TEMPLATE=own
-fi
-
-CUDA_VISIBLE_DEVICES=0,1,2,3 python eval_scripts/generate_vllm.py \
-  --model_path $MODEL_PATH \
-  --input_file $DATA \
-  --remove_system True \
-  --add_oat_evaluate True \
-  --output_file $OUTPUT_DIR/$MODEL_NAME.jsonl \
-  --template $TEMPLATE > $OUTPUT_DIR/$MODEL_NAME.log
-```
-
-
-
-## LUFFY on Qwen2.5-Math-7B (zero-RL)
-LUFFY is evaluated on six competition-level benchmarks, achieving state-of-the-art results among all zero-RL methods. It surpasses both on-policy RL and imitation learning (SFT), especially in generalization:
-
-
-
-| **Model**                          | **AIME 2024** | **AIME 2025** | **AMC** | **MATH-500** | **Minerva** | **Olympiad** | **Avg.** |
-|-----------------------------------|-------------|-------------|---------|---------------|-------------|---------------|----------|
-| Qwen2.5-Math-7B                      |11.5 | 4.9 | 31.3 | 43.6 | 7.4 | 15.6 | 19.0 |
-| Qwen2.5-Math-7B-Instruct             |12.5  | 10.2 | 48.5 | 80.4 | 32.7 | 41.0 | 37.6   |
-| SimpleRL-Zero                     | 27.0 | 6.8  | 54.9 | 76.0 | 25.0 | 34.7 | 37.4     |
-| OpenReasoner-Zero                 | 16.5 | 15.0 | 52.1 | 82.4 | 33.1 | 47.1 | 41.0    |
-| PRIME-Zero                        | 17.0 | 12.8 | 54.0 | 81.4 | **39.0** | 40.3 | 40.7    |
-| Oat-Zero                          | **33.4**  | 11.9 | 61.2 | 78.0 | 34.6 | 43.4 | 43.7   |
-| **LUFFY-Qwen-Math-7B-Zero**                         | 29.4        | **23.1**        | **65.6**| **87.6**      | 37.5        | **57.2**      | **50.1** |
-
----
-
-
-
-LUFFY also generalizes well to out-of-distribution tasks, with over +6.2 average gain on ARC-C, GPQA, and MMLU-Pro.
-
-
-| **Model**                         | **ARC-c** | **GPQA-diamond** | **MMLU-Pro** | **Avg.** |
-|----------------------------------|-----------|------------------|--------------|----------|
-| Qwen2.5-Math-7B             | 18.2 | 11.1 | 16.9 | 15.4  |
-| Qwen2.5-Math-7B-Instruct         | 70.3 | 24.7 | 34.1 | 43.0    |
-| SimpleRL-Zero                    | 30.2 | 23.2 | 34.5 | 29.3     |
-| OpenReasoner-Zero                       | 66.2 | 29.8 | 58.7 | 51.6     |
-| PRIME-Zero                         | 73.3 | 18.2 | 32.7 | 41.4   |
-| Oat-Zero                | 70.1 | 23.7 | 41.7 | 45.2    |
-| **LUFFY-Qwen-Math-7B-Zero**                        | **80.5** |  **39.9** | **53.0** | **57.8** |
-
-
-We further compare LUFFY with alternative off-policy learning methods, including SFT, RL w/ SFT Loss and SFT+RL (see our paper for details):
-
-| **Model**                          | **GPU Hours** | **Data Usage (On/Off)** | **AIME 2024** | **AIME 2025** | **AMC** | **MATH-500** | **Minerva** | **Olympiad** | **Avg.** |
-|-----------------------------------|-------------|-------------|-------------|-------------|---------|---------------|-------------|---------------|----------|
-| SFT                      | 24*8 | 0 / 64k | 22.2 | 22.3 | 52.8 | 82.6 | 40.8 | 43.7 | 44.1 |
-| RL w/ SFT Loss             |  133*8    | 64k*7 / 64k  |  19.5 | 16.4 | 49.7 | 80.4 | 34.9 | 39.4 | 40.1  |
-| SFT+RL                      | 130*8 |  64k*8/135k |  25.8 | **23.1** | 62.7 | 87.2 | 39.7 | 50.4 | 48.2 |
-| **LUFFY-Qwen-Math-7B-Zero**            | 77*8 | 64k*7 / 64k              | 29.4        | **23.1**        | 65.6 | **87.6**      | 37.5        | **57.2**      | 50.1 |
-| **LUFFY-Qwen-Math-7B-Zero-Extra**       |    130*8       |   110k*7 / 110k      | **30.7** | 22.5 | **66.2**|  86.8 | **41.2** | 55.3 | **50.4** |
-
----
-
-## LUFFY on Qwen2.5-Math-1.5B
-| **Model**                          | **AIME 2024** | **AIME 2025** | **AMC** | **MATH-500** | **Minerva** | **Olympiad** | **Avg.** |
-|-----------------------------------|-------------|-------------|---------|---------------|-------------|---------------|----------|
-| Qwen2.5-Math-1.5B                  |   7.2 |  3.6 | 26.4 | 28.0 | 9.6 | 21.2 | 16.0 |
-| Qwen2.5-Math-1.5B-Instruct            |  12.1 | 8.9 | 48.1 | 77.4 | 28.7 | 39.1 | 35.7 |
-| **LUFFY-Qwen-Math-1.5B-Zero**             | **16.0** | **13.1** | **47.1** | **80.2** | **30.5** | **41.0** | **38.0** |
-
-
-
-## LUFFY on Qwen2.5-Instruct-7B 
-| **Model**                          | **AIME 2024** | **AIME 2025** | **AMC** | **MATH-500** | **Minerva** | **Olympiad** | **Avg.** |
-|-----------------------------------|-------------|-------------|---------|---------------|-------------|---------------|----------|
-| Qwen2.5-7B-Instruct           | 11.7 | 7.5 | 43.8 | 71.8 | 30.9 | 40.4|  34.4|
-| **LUFFY-Qwen-Instruct-7B**             | **17.7** |  **14.8** | **50.9** | **82.0** | **31.3** | **47.4** | **40.7** |
-
-
-# 🌻Acknowledgement
 
 LUFFY builds upon [veRL](https://github.com/volcengine/verl) and [deepscaler](https://github.com/agentica-project/rllm), and utilizes [vLLM](https://github.com/vllm-project/vllm) for inference. We utilize [Math-Verify](https://github.com/huggingface/Math-Verify) for math reasoning evaluation. We thank the open-source community for datasets and backbones, including [NuminaMath](https://huggingface.co/datasets/AI-MO/NuminaMath-CoT), [OpenR1-Math-220k](https://huggingface.co/datasets/open-r1/OpenR1-Math-220k), [Qwen2.5-Math](https://github.com/QwenLM/Qwen2.5-Math), and [DeepSeek-R1](https://github.com/deepseek-ai/deepseek-r1) model. 
 
@@ -685,4 +974,5 @@ If you find our model, data, or evaluation code useful, please kindly cite our p
       url={https://arxiv.org/abs/2510.02245}, 
 }
 ```
+
 
