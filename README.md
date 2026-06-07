@@ -382,3 +382,722 @@ If you find our model, data, or evaluation code useful, please kindly cite our p
 }
 ```
 
+
+### 📝 Complete TODO List
+
+```
+Total TODO items: 416
+
+1. [ExGRPO/exgrpo/verl/examples/split_placement/split_monkey_patch.py:141]
+   - make a canonical logger that supports various backend
+
+2. [ExGRPO/exgrpo/verl/tests/e2e/check_results.py:21]
+   - this function needs error handling
+
+3. [ExGRPO/exgrpo/verl/tests/model/test_transformer.py:22-111]
+   - (sgm): add more models for test
+   - (sgm): we can construct the position_ids_rmpad here
+   - (sgm): we can construct the position_ids_rmpad here
+
+4. [ExGRPO/exgrpo/verl/tests/model/test_transformers_ulysses.py:34-159]
+   - (sgm): add more models for test
+   - (sgm): we can construct the position_ids_rmpad here
+   - (sgm): we can construct the position_ids_rmpad here
+
+5. [ExGRPO/exgrpo/verl/tests/ray/test_high_level_scheduling_api.py:25]
+   - pass *args and **kwargs is bug prone and not very convincing
+
+6. [ExGRPO/exgrpo/verl/tests/ray/test_worker_group_basics.py:43]
+   - pass *args and **kwargs is bug prone and not very convincing
+
+7. [ExGRPO/exgrpo/verl/verl/mix_src/mix_fsdp_worker.py:54-586]
+   - (sgm): support FSDP hybrid shard for larger model
+   - it seems that manual offload is slowly than FSDP offload
+   - (zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+   - add transformer policy
+   - add more optimizer args into config
+   - (sgm): support FSDP hybrid shard for larger model
+   - a sharding manager that do nothing?
+   - here, we should return all metrics
+   - support DCP and save sharded checkpoints
+
+8. [ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer.py:90-552]
+   - add other ways to estimate advantages
+   - support each role have individual ray_worker_group_cls,
+   - we have to make sure the batch size is divisible by the dp size
+   - make a canonical logger that supports various backend
+   - add response length
+
+9. [ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_acc_rebatch.py:63-628]
+   - we have to make sure the batch size is divisible by the dp size
+   - make a canonical logger that supports various backend
+   - check path
+   - from remote not implemented yet
+
+10. [ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_experience.py:64-534]
+   - support each role have individual ray_worker_group_cls,
+   - make a canonical logger that supports various backend
+
+11. [ExGRPO/exgrpo/verl/verl/mix_src/mix_trainer_helper.py:40-97]
+   - add other ways to estimate advantages
+   - add response length
+
+12. [ExGRPO/exgrpo/verl/verl/mix_src/mix_vllm_rollout.py:43]
+   - 
+
+13. [ExGRPO/exgrpo/verl/verl/mix_src/mix_vllm_rollout_exp.py:43]
+   - 
+
+14. [ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_attention.py:380]
+   - llama does not have dropout in the config??
+
+15. [ExGRPO/exgrpo/verl/verl/models/llama/megatron/layers/parallel_decoder.py:78-90]
+   - add sequence parallel operator reduce_scatter here
+   - add sequence parallel operator all_gather here
+   - add sequence parallel operator reduce_scatter here
+
+16. [ExGRPO/exgrpo/verl/verl/models/llama/megatron/modeling_llama_megatron.py:330-588]
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+
+17. [ExGRPO/exgrpo/verl/verl/models/registry.py:21]
+   - (sgm): HF may supported more than listed here, we should add more after testing
+
+18. [ExGRPO/exgrpo/verl/verl/models/transformers/llama.py:88]
+   - These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
+
+19. [ExGRPO/exgrpo/verl/verl/protocol.py:164-346]
+   - (zhangchi.usc1992) add consistency check
+   - we can actually lift this restriction if needed
+   - (zhangchi.usc1992) whether to copy
+
+20. [ExGRPO/exgrpo/verl/verl/single_controller/ray/base.py:439]
+   - create a class with customizable name
+
+21. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py:64-147]
+   - (shengguangming): delete the unused args
+   - (woosuk): Support fine-grained seeds (e.g., seed per request).
+
+22. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py:237-257]
+   - (shengguangming): maybe we can hack the autoregressive logics without only apply post process for better performance
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+23. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:99-661]
+   - (woosuk): Print more configs in debug mode.
+   - currently is hfconfig
+   - (shengguangming): maybe we can choose init here or from arguments
+   - check get_lora_tokenizer func
+   - check this input
+   - we may not need to decode
+
+24. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py:67-224]
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+   - (pad to be divided by 4)
+   - (zhuohan): Change the get_logits part to a separate stage.
+
+25. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py:56]
+   - (sgm): the lora tokenizer is also passed, but may be different
+
+26. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:62-84]
+   - check megatron
+   - need to implement a general way to deal with prefix
+
+27. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:109-291]
+   - do not use cupy
+   - (woosuk): Profile swapping overhead and optimize if needed.
+   - (shengguangming): maybe we should also flag the megatron is initialized
+
+28. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py:44-257]
+   - 
+   - (shengguangming): delete the unused args
+   - (woosuk): Support fine-grained seeds (e.g., seed per request).
+   - spec config
+
+29. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/config.py:136]
+   - for multimodal model
+
+30. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py:81]
+   - 
+
+31. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py:268-288]
+   - (shengguangming): maybe we can hack the autoregressive logics without only apply post process for better performance
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+32. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:128-237]
+   - (woosuk): Print more configs in debug mode.
+   - currently is hfconfig
+   - (shengguangming): maybe we can choose init here or from arguments
+   - check tokenizer class
+   - don't know what's the usage
+   - (sgm): add for verl but we may not tokenizer in Rollout
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+
+33. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:67-337]
+   - check megatron
+   - need to implement a general way to deal with prefix
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+   - (pad to be divided by 4)
+   - remove dependencies from megatron
+
+34. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:141-226]
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+
+35. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py:274]
+   - (sgm): perform sampling on rank 0
+
+36. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:236-247]
+   - this will hang
+   - will hang when used with device mesh
+   - init using device mesh
+
+37. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py:62-208]
+   - (sgm): verl not support speculative decode now
+   - (sgm): not implemented async executor yet
+
+38. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py:61]
+   - (sgm): the lora tokenizer is also passed, but may be different
+
+39. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py:30-270]
+   - (sgm): check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+   - (sgm): check whether need this
+
+40. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py:53-366]
+   - (sgm): check this
+   - (sgm): check this
+   - (shengguangming): delete the unused args
+   - (woosuk): Support fine-grained seeds (e.g., seed per request).
+   - spec config
+
+41. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/config.py:191]
+   - check whether this is necessary
+
+42. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py:32]
+   - 
+
+43. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py:148-221]
+   - check usagecontext
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+44. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py:143-271]
+   - (woosuk): Print more configs in debug mode.
+   - (shengguangming): maybe we can choose init here or from arguments
+   - (sgm): add for verl but we may not tokenizer in Rollout
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+
+45. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:67-272]
+   - check megatron
+   - need to implement a general way to deal with prefix
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+
+46. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:152-239]
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+
+47. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:94-253]
+   - (sgm): deviate from the v0.5.4, not pp now
+   - check why True is not work in Ray trainer
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+
+48. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py:65-243]
+   - (sgm): verl not support speculative decode now
+   - (sgm): not implemented async executor yet
+
+49. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py:61]
+   - (sgm): the lora tokenizer is also passed, but may be different
+
+50. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:29-301]
+   - (sgm): check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+   - we don't need driver
+   - (sgm): set correct model runner class
+   - (sgm): check whether need this
+
+51. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py:29]
+   - 
+
+52. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py:147-186]
+   - check usagecontext
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+53. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py:174-345]
+   - (woosuk): Print more configs in debug mode.
+   - (sgm): add for verl but we may not tokenizer in Rollout
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+
+54. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:68-273]
+   - check megatron
+   - need to implement a general way to deal with prefix
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+
+55. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:170-273]
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+
+56. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:97-262]
+   - (sgm): deviate from the v0.5.4, not pp now
+   - check why True is not work in Ray trainer
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+
+57. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py:73-246]
+   - (sgm): verl not support speculative decode now
+   - (sgm): not implemented async executor yet
+
+58. [ExGRPO/exgrpo/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:33-311]
+   - (sgm): check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+   - we don't need driver
+   - (sgm): set correct model runner class
+   - (sgm): check whether need this
+
+59. [ExGRPO/exgrpo/verl/verl/trainer/fsdp_sft_trainer.py:77-333]
+   - add checkpoint manager
+   - (zhangchi.usc1992):
+   - add a unified tracking
+   - (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.
+
+60. [ExGRPO/exgrpo/verl/verl/trainer/ppo/ray_trainer.py:129-885]
+   - add other ways to estimate advantages
+   - add response length
+   - support each role have individual ray_worker_group_cls,
+   - we have to make sure the batch size is divisible by the dp size
+   - check path
+   - from remote not implemented yet
+   - make a canonical logger that supports various backend
+
+61. [ExGRPO/exgrpo/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:101-135]
+   - shall we remove previous ckpt every save?
+   - address optimizer is None
+
+62. [ExGRPO/exgrpo/verl/verl/utils/hdfs_io.py:67-102]
+   - (haibin.lin):
+   - (haibin.lin):
+
+63. [ExGRPO/exgrpo/verl/verl/utils/megatron_utils.py:202]
+   - (sgm): check how to disable megatron timers
+
+64. [ExGRPO/exgrpo/verl/verl/utils/model.py:164-272]
+   - we can make this faster
+   - to find a better way to load mistral7b-rm lm_head
+
+65. [ExGRPO/exgrpo/verl/verl/utils/torch_functional.py:375]
+   - add them back
+
+66. [ExGRPO/exgrpo/verl/verl/workers/actor/megatron_actor.py:158-301]
+   - (zhangchi.usc1992): actually, this function should only return log_prob and this logic should be handled by user outside
+   - actually, we just need to control the sampling order.
+   - we may use the new schedule instead
+
+67. [ExGRPO/exgrpo/verl/verl/workers/critic/megatron_critic.py:176]
+   - we may use the new schedule instead
+
+68. [ExGRPO/exgrpo/verl/verl/workers/fsdp_workers.py:88-811]
+   - (sgm): support FSDP hybrid shard for larger model
+   - it seems that manual offload is slowly than FSDP offload
+   - (zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+   - add transformer policy
+   - add more optimizer args into config
+   - (sgm): support FSDP hybrid shard for larger model
+   - a sharding manager that do nothing?
+   - here, we should return all metrics
+   - (sgm): we may need to extract it to dp_reward_model.py
+
+69. [ExGRPO/exgrpo/verl/verl/workers/megatron_workers.py:106-720]
+   - (sgm): Currently, we only support reference model param offload
+   - add more optimizer args into config
+   - here, we should return all metrics
+   - (sgm): support critic model offload
+   - support vpp here
+   - add more optimizer args into config
+   - add more optimizer args into config
+   - reward model use itself tokenizer instead of sft tokenizer
+
+70. [ExGRPO/exgrpo/verl/verl/workers/reward_model/megatron/reward_model.py:145-233]
+   - (sgm): check why is bfloat16
+   - actually, we just need to control the sampling order.
+   - we may use the new schedule instead
+
+71. [ExGRPO/exgrpo/verl/verl/workers/rollout/hf_rollout.py:98]
+   - filter out the seq with no answers like ds-chat
+
+72. [ExGRPO/exgrpo/verl/verl/workers/rollout/vllm_rollout/vllm_rollout.py:43]
+   - 
+
+73. [ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_ulysses.py:49-56]
+   - check how to set seed for each model
+   - check how to set seed for each model
+
+74. [ExGRPO/exgrpo/verl/verl/workers/sharding_manager/fsdp_vllm.py:82-130]
+   - offload FSDP model weights
+   - Current impl doesn't consider FSDP with torch micro-dp
+   - Current impl doesn't consider FSDP with torch micro-dp
+   - shall we build a micro_dp group for vllm when integrating with vLLM?
+
+75. [ExGRPO/exgrpo/verl/verl/workers/sharding_manager/megatron_vllm.py:76-323]
+   - after binding to the memory buffer, we can load the checkpoint here
+   - (sgm): this may not be true for FSDP -> vLLM
+   - (zhangchi.usc1992) We can consider copy non-tp weight to another infer buffer.
+
+76. [luffy/test.py:1590]
+   - add smaller page sizes when https://github.com/Dao-AILab/flash-attention/pull/824 is merged
+
+77. [luffy/verl/examples/split_placement/split_monkey_patch.py:141]
+   - make a canonical logger that supports various backend
+
+78. [luffy/verl/tests/e2e/check_results.py:21]
+   - this function needs error handling
+
+79. [luffy/verl/tests/model/test_transformer.py:22-111]
+   - (sgm): add more models for test
+   - (sgm): we can construct the position_ids_rmpad here
+   - (sgm): we can construct the position_ids_rmpad here
+
+80. [luffy/verl/tests/model/test_transformers_ulysses.py:34-159]
+   - (sgm): add more models for test
+   - (sgm): we can construct the position_ids_rmpad here
+   - (sgm): we can construct the position_ids_rmpad here
+
+81. [luffy/verl/tests/ray/test_high_level_scheduling_api.py:25]
+   - pass *args and **kwargs is bug prone and not very convincing
+
+82. [luffy/verl/tests/ray/test_worker_group_basics.py:43]
+   - pass *args and **kwargs is bug prone and not very convincing
+
+83. [luffy/verl/verl/mix_src/mix_fsdp_worker.py:54-517]
+   - (sgm): support FSDP hybrid shard for larger model
+   - it seems that manual offload is slowly than FSDP offload
+   - (zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+   - add transformer policy
+   - add more optimizer args into config
+   - (sgm): support FSDP hybrid shard for larger model
+   - a sharding manager that do nothing?
+   - here, we should return all metrics
+   - support DCP and save sharded checkpoints
+
+84. [luffy/verl/verl/mix_src/mix_trainer.py:90-637]
+   - add other ways to estimate advantages
+   - support each role have individual ray_worker_group_cls,
+   - we have to make sure the batch size is divisible by the dp size
+   - make a canonical logger that supports various backend
+   - add response length
+
+85. [luffy/verl/verl/mix_src/mix_trainer_acc_rebatch.py:63-628]
+   - we have to make sure the batch size is divisible by the dp size
+   - make a canonical logger that supports various backend
+   - check path
+   - from remote not implemented yet
+
+86. [luffy/verl/verl/mix_src/mix_vllm_rollout.py:43]
+   - 
+
+87. [luffy/verl/verl/models/llama/megatron/layers/parallel_attention.py:380]
+   - llama does not have dropout in the config??
+
+88. [luffy/verl/verl/models/llama/megatron/layers/parallel_decoder.py:78-90]
+   - add sequence parallel operator reduce_scatter here
+   - add sequence parallel operator all_gather here
+   - add sequence parallel operator reduce_scatter here
+
+89. [luffy/verl/verl/models/llama/megatron/modeling_llama_megatron.py:330-588]
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+   - for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+
+90. [luffy/verl/verl/models/registry.py:21]
+   - (sgm): HF may supported more than listed here, we should add more after testing
+
+91. [luffy/verl/verl/models/transformers/llama.py:88]
+   - These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
+
+92. [luffy/verl/verl/protocol.py:164-346]
+   - (zhangchi.usc1992) add consistency check
+   - we can actually lift this restriction if needed
+   - (zhangchi.usc1992) whether to copy
+
+93. [luffy/verl/verl/single_controller/ray/base.py:439]
+   - create a class with customizable name
+
+94. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py:64-147]
+   - (shengguangming): delete the unused args
+   - (woosuk): Support fine-grained seeds (e.g., seed per request).
+
+95. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm.py:237-257]
+   - (shengguangming): maybe we can hack the autoregressive logics without only apply post process for better performance
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+96. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:99-661]
+   - (woosuk): Print more configs in debug mode.
+   - currently is hfconfig
+   - (shengguangming): maybe we can choose init here or from arguments
+   - check get_lora_tokenizer func
+   - check this input
+   - we may not need to decode
+
+97. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py:67-224]
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+   - (pad to be divided by 4)
+   - (zhuohan): Change the get_logits part to a separate stage.
+
+98. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py:56]
+   - (sgm): the lora tokenizer is also passed, but may be different
+
+99. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:62-84]
+   - check megatron
+   - need to implement a general way to deal with prefix
+
+100. [luffy/verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:109-291]
+   - do not use cupy
+   - (woosuk): Profile swapping overhead and optimize if needed.
+   - (shengguangming): maybe we should also flag the megatron is initialized
+
+101. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py:44-257]
+   - 
+   - (shengguangming): delete the unused args
+   - (woosuk): Support fine-grained seeds (e.g., seed per request).
+   - spec config
+
+102. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/config.py:136]
+   - for multimodal model
+
+103. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py:81]
+   - 
+
+104. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm.py:268-288]
+   - (shengguangming): maybe we can hack the autoregressive logics without only apply post process for better performance
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+105. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:128-237]
+   - (woosuk): Print more configs in debug mode.
+   - currently is hfconfig
+   - (shengguangming): maybe we can choose init here or from arguments
+   - check tokenizer class
+   - don't know what's the usage
+   - (sgm): add for verl but we may not tokenizer in Rollout
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+
+106. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:67-337]
+   - check megatron
+   - need to implement a general way to deal with prefix
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+   - (pad to be divided by 4)
+   - remove dependencies from megatron
+
+107. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py:141-226]
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+
+108. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py:274]
+   - (sgm): perform sampling on rank 0
+
+109. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:236-247]
+   - this will hang
+   - will hang when used with device mesh
+   - init using device mesh
+
+110. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py:62-208]
+   - (sgm): verl not support speculative decode now
+   - (sgm): not implemented async executor yet
+
+111. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py:61]
+   - (sgm): the lora tokenizer is also passed, but may be different
+
+112. [luffy/verl/verl/third_party/vllm/vllm_v_0_4_2/worker.py:30-270]
+   - (sgm): check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+   - (sgm): check whether need this
+
+113. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py:53-366]
+   - (sgm): check this
+   - (sgm): check this
+   - (shengguangming): delete the unused args
+   - (woosuk): Support fine-grained seeds (e.g., seed per request).
+   - spec config
+
+114. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/config.py:191]
+   - check whether this is necessary
+
+115. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py:32]
+   - 
+
+116. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py:148-221]
+   - check usagecontext
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+117. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py:143-271]
+   - (woosuk): Print more configs in debug mode.
+   - (shengguangming): maybe we can choose init here or from arguments
+   - (sgm): add for verl but we may not tokenizer in Rollout
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+
+118. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:67-272]
+   - check megatron
+   - need to implement a general way to deal with prefix
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+
+119. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py:152-239]
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+
+120. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:94-253]
+   - (sgm): deviate from the v0.5.4, not pp now
+   - check why True is not work in Ray trainer
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+
+121. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py:65-243]
+   - (sgm): verl not support speculative decode now
+   - (sgm): not implemented async executor yet
+
+122. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py:61]
+   - (sgm): the lora tokenizer is also passed, but may be different
+
+123. [luffy/verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:29-301]
+   - (sgm): check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+   - we don't need driver
+   - (sgm): set correct model runner class
+   - (sgm): check whether need this
+
+124. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py:29]
+   - 
+
+125. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py:147-186]
+   - check usagecontext
+   - (sgm): we can optimize it by making the dataloader yield List[int] without padding.
+   - (shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
+
+126. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py:174-345]
+   - (woosuk): Print more configs in debug mode.
+   - (sgm): add for verl but we may not tokenizer in Rollout
+   - check whether we should rebuild the CUDAGraph every iter when offload/load KVCache
+
+127. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:68-273]
+   - check megatron
+   - need to implement a general way to deal with prefix
+   - (shengguangming): latest commit in vllm fix awq for this function and add load_weights
+
+128. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py:170-273]
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+   - (sgm): This is a hack, we need to register the load_weight() func for each model in vllm
+
+129. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:97-262]
+   - (sgm): deviate from the v0.5.4, not pp now
+   - check why True is not work in Ray trainer
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+   - check why True is not work in Ray trainer
+   - init using device mesh (not support hybrid engine now)
+
+130. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py:73-246]
+   - (sgm): verl not support speculative decode now
+   - (sgm): not implemented async executor yet
+
+131. [luffy/verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:33-311]
+   - (sgm): check why vllm has similar file in vllm.model_executor.parallel_utils.parallel_state
+   - we don't need driver
+   - (sgm): set correct model runner class
+   - (sgm): check whether need this
+
+132. [luffy/verl/verl/trainer/fsdp_sft_trainer.py:77-333]
+   - add checkpoint manager
+   - (zhangchi.usc1992):
+   - add a unified tracking
+   - (zhangchi.usc1992) add back checkpoint manager. Currently, it blocks when uploading to hdfs. So very slow.
+
+133. [luffy/verl/verl/trainer/ppo/ray_trainer.py:129-880]
+   - add other ways to estimate advantages
+   - add response length
+   - support each role have individual ray_worker_group_cls,
+   - we have to make sure the batch size is divisible by the dp size
+   - check path
+   - from remote not implemented yet
+   - make a canonical logger that supports various backend
+
+134. [luffy/verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:101-135]
+   - shall we remove previous ckpt every save?
+   - address optimizer is None
+
+135. [luffy/verl/verl/utils/hdfs_io.py:67-102]
+   - (haibin.lin):
+   - (haibin.lin):
+
+136. [luffy/verl/verl/utils/megatron_utils.py:202]
+   - (sgm): check how to disable megatron timers
+
+137. [luffy/verl/verl/utils/model.py:164-272]
+   - we can make this faster
+   - to find a better way to load mistral7b-rm lm_head
+
+138. [luffy/verl/verl/utils/torch_functional.py:362]
+   - add them back
+
+139. [luffy/verl/verl/workers/actor/megatron_actor.py:158-301]
+   - (zhangchi.usc1992): actually, this function should only return log_prob and this logic should be handled by user outside
+   - actually, we just need to control the sampling order.
+   - we may use the new schedule instead
+
+140. [luffy/verl/verl/workers/critic/megatron_critic.py:176]
+   - we may use the new schedule instead
+
+141. [luffy/verl/verl/workers/fsdp_workers.py:88-811]
+   - (sgm): support FSDP hybrid shard for larger model
+   - it seems that manual offload is slowly than FSDP offload
+   - (zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
+   - (zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+   - add transformer policy
+   - add more optimizer args into config
+   - (sgm): support FSDP hybrid shard for larger model
+   - a sharding manager that do nothing?
+   - here, we should return all metrics
+   - (sgm): we may need to extract it to dp_reward_model.py
+
+142. [luffy/verl/verl/workers/megatron_workers.py:106-720]
+   - (sgm): Currently, we only support reference model param offload
+   - add more optimizer args into config
+   - here, we should return all metrics
+   - (sgm): support critic model offload
+   - support vpp here
+   - add more optimizer args into config
+   - add more optimizer args into config
+   - reward model use itself tokenizer instead of sft tokenizer
+
+143. [luffy/verl/verl/workers/reward_model/megatron/reward_model.py:145-233]
+   - (sgm): check why is bfloat16
+   - actually, we just need to control the sampling order.
+   - we may use the new schedule instead
+
+144. [luffy/verl/verl/workers/rollout/hf_rollout.py:98]
+   - filter out the seq with no answers like ds-chat
+
+145. [luffy/verl/verl/workers/rollout/vllm_rollout/vllm_rollout.py:43]
+   - 
+
+146. [luffy/verl/verl/workers/sharding_manager/fsdp_ulysses.py:49-56]
+   - check how to set seed for each model
+   - check how to set seed for each model
+
+147. [luffy/verl/verl/workers/sharding_manager/fsdp_vllm.py:82-130]
+   - offload FSDP model weights
+   - Current impl doesn't consider FSDP with torch micro-dp
+   - Current impl doesn't consider FSDP with torch micro-dp
+   - shall we build a micro_dp group for vllm when integrating with vLLM?
+
+148. [luffy/verl/verl/workers/sharding_manager/megatron_vllm.py:76-323]
+   - after binding to the memory buffer, we can load the checkpoint here
+   - (sgm): this may not be true for FSDP -> vLLM
+   - (zhangchi.usc1992) We can consider copy non-tp weight to another infer buffer.
+
+```
