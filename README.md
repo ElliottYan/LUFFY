@@ -382,3 +382,162 @@ If you find our model, data, or evaluation code useful, please kindly cite our p
 }
 ```
 
+
+### 📝 Complete TODO List
+
+#### root/
+- `test.py:1590`: add smaller page sizes when https://github.com/Dao-AILab/flash-attention/pull/824 is merged
+
+#### verl/examples/split_placement/
+- `verl/examples/split_placement/split_monkey_patch.py:141`: make a canonical logger that supports various backend
+
+#### verl/tests/e2e/
+- `verl/tests/e2e/check_results.py:21`: this function needs error handling
+
+#### verl/tests/ray/
+- `verl/tests/ray/test_high_level_scheduling_api.py:25`: pass *args and **kwargs is bug prone and not very convincing
+- `verl/tests/ray/test_worker_group_basics.py:43`: pass *args and **kwargs is bug prone and not very convincing
+
+#### verl/verl/
+- `verl/verl/protocol.py:260`: we can actually lift this restriction if needed
+
+#### verl/verl/mix_src/
+- `verl/verl/mix_src/mix_fsdp_worker.py:83`: it seems that manual offload is slowly than FSDP offload
+- `verl/verl/mix_src/mix_fsdp_worker.py:207`: add transformer policy We force reference policy to use CPUOffload to save memory. We force turn off CPUOffload for actor because it causes incorrect results when using grad accumulation
+- `verl/verl/mix_src/mix_fsdp_worker.py:226`: add more optimizer args into config
+- `verl/verl/mix_src/mix_fsdp_worker.py:263`: a sharding manager that do nothing?
+- `verl/verl/mix_src/mix_fsdp_worker.py:391`: here, we should return all metrics
+- `verl/verl/mix_src/mix_fsdp_worker.py:517`: support DCP and save sharded checkpoints
+- `verl/verl/mix_src/mix_trainer.py:90`: add other ways to estimate advantages
+- `verl/verl/mix_src/mix_trainer.py:168`: support each role have individual ray_worker_group_cls, i.e., support different backend of different role
+- `verl/verl/mix_src/mix_trainer.py:293`: we have to make sure the batch size is divisible by the dp size
+- `verl/verl/mix_src/mix_trainer.py:599`: make a canonical logger that supports various backend
+- `verl/verl/mix_src/mix_trainer.py:637`: add response length
+- `verl/verl/mix_src/mix_trainer_acc_rebatch.py:63`: we have to make sure the batch size is divisible by the dp size
+- `verl/verl/mix_src/mix_trainer_acc_rebatch.py:437`: make a canonical logger that supports various backend
+- `verl/verl/mix_src/mix_trainer_acc_rebatch.py:592`: check path
+- `verl/verl/mix_src/mix_trainer_acc_rebatch.py:628`: from remote not implemented yet
+
+#### verl/verl/models/llama/megatron/
+- `verl/verl/models/llama/megatron/modeling_llama_megatron.py:330`: for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+- `verl/verl/models/llama/megatron/modeling_llama_megatron.py:588`: for better performance, the sp padding should be removed at each layer. Not sure the performance gap
+
+#### verl/verl/models/llama/megatron/layers/
+- `verl/verl/models/llama/megatron/layers/parallel_attention.py:380`: llama does not have dropout in the config?? It is recommended to use dropout with FA according to the docs when training.
+- `verl/verl/models/llama/megatron/layers/parallel_decoder.py:78`: add sequence parallel operator reduce_scatter here
+- `verl/verl/models/llama/megatron/layers/parallel_decoder.py:86`: add sequence parallel operator all_gather here
+- `verl/verl/models/llama/megatron/layers/parallel_decoder.py:90`: add sequence parallel operator reduce_scatter here
+
+#### verl/verl/models/transformers/
+- `verl/verl/models/transformers/llama.py:88`: These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache to be able to avoid many of these transpose/reshape/view.
+
+#### verl/verl/single_controller/ray/
+- `verl/verl/single_controller/ray/base.py:439`: create a class with customizable name
+
+#### verl/verl/third_party/vllm/vllm_v_0_3_1/
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:101`: currently is hfconfig
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:145`: check get_lora_tokenizer func
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:586`: check this input
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py:661`: we may not need to decode
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:62`: check megatron
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py:84`: need to implement a general way to deal with prefix
+- `verl/verl/third_party/vllm/vllm_v_0_3_1/worker.py:109`: do not use cupy
+
+#### verl/verl/third_party/vllm/vllm_v_0_4_2/
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py:257`: spec config
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/config.py:136`: for multimodal model
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:130`: currently is hfconfig
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:145`: check tokenizer class
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:153`: don't know what's the usage
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py:237`: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache Re-capture CUDAGraph would be time-consuming
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:67`: check megatron
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:254`: need to implement a general way to deal with prefix
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py:337`: remove dependencies from megatron
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:236`: this will hang cpu_group = torch.distributed.new_group(, backend="gloo") if rank == 0: print(f'rank: {rank}') print(f'ranks: {ranks}') print(f'torch.distributed.get_process_group_ranks(shard_group): {torch.distributed.get_process_group_ranks(shard_group)}') if rank in ranks:
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:245`: will hang when used with device mesh
+- `verl/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py:247`: init using device mesh Build the pipeline model-parallel groups.
+
+#### verl/verl/third_party/vllm/vllm_v_0_5_4/
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py:366`: spec config
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/config.py:191`: check whether this is necessary
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/llm.py:148`: check usagecontext
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py:271`: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache Re-capture CUDAGraph would be time-consuming
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:67`: check megatron
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py:254`: need to implement a general way to deal with prefix
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:138`: check why True is not work in Ray trainer
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:165`: check why True is not work in Ray trainer
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:177`: init using device mesh (not support hybrid engine now) Build the pipeline model-parallel groups.
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:249`: check why True is not work in Ray trainer
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py:253`: init using device mesh (not support hybrid engine now) Build the pipeline model-parallel groups.
+- `verl/verl/third_party/vllm/vllm_v_0_5_4/worker.py:84`: we don't need driver if parallel_config and is_driver_worker: assert rank % parallel_config.tensor_parallel_size == 0, \ "Driver worker should be rank 0 of tensor parallel group."
+
+#### verl/verl/third_party/vllm/vllm_v_0_6_3/
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/llm.py:147`: check usagecontext
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py:345`: check whether we should rebuild the CUDAGraph every iter when offload/load KVCache Re-capture CUDAGraph would be time-consuming
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:68`: check megatron
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py:255`: need to implement a general way to deal with prefix
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:144`: check why True is not work in Ray trainer
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:172`: check why True is not work in Ray trainer
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:185`: init using device mesh (not support hybrid engine now) Build the pipeline model-parallel groups.
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:257`: check why True is not work in Ray trainer
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py:262`: init using device mesh (not support hybrid engine now) Build the pipeline model-parallel groups.
+- `verl/verl/third_party/vllm/vllm_v_0_6_3/worker.py:92`: we don't need driver if parallel_config and is_driver_worker: assert rank % parallel_config.tensor_parallel_size == 0, \ "Driver worker should be rank 0 of tensor parallel group."
+
+#### verl/verl/trainer/
+- `verl/verl/trainer/fsdp_sft_trainer.py:77`: add checkpoint manager
+- `verl/verl/trainer/fsdp_sft_trainer.py:316`: add a unified tracking
+
+#### verl/verl/trainer/ppo/
+- `verl/verl/trainer/ppo/ray_trainer.py:129`: add other ways to estimate advantages
+- `verl/verl/trainer/ppo/ray_trainer.py:207`: add response length
+- `verl/verl/trainer/ppo/ray_trainer.py:330`: support each role have individual ray_worker_group_cls, i.e., support different backend of different role
+- `verl/verl/trainer/ppo/ray_trainer.py:379`: we have to make sure the batch size is divisible by the dp size
+- `verl/verl/trainer/ppo/ray_trainer.py:632`: check path
+- `verl/verl/trainer/ppo/ray_trainer.py:667`: from remote not implemented yet
+- `verl/verl/trainer/ppo/ray_trainer.py:880`: make a canonical logger that supports various backend
+
+#### verl/verl/utils/
+- `verl/verl/utils/model.py:164`: we can make this faster
+- `verl/verl/utils/model.py:272`: to find a better way to load mistral7b-rm lm_head
+- `verl/verl/utils/torch_functional.py:362`: add them back if top_k is not None and top_k > 0: logits = TopKLogitsWarper(top_k=top_k)(input_ids, logits) if top_p is not None and top_p < 1.0 and top_p > 0.0: logits = TopPLogitsWarper(top_p=top_p)(input_ids, logits)
+
+#### verl/verl/utils/checkpoint/
+- `verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:101`: shall we remove previous ckpt every save?
+- `verl/verl/utils/checkpoint/fsdp_checkpoint_manager.py:135`: address optimizer is None
+
+#### verl/verl/workers/
+- `verl/verl/workers/fsdp_workers.py:117`: it seems that manual offload is slowly than FSDP offload
+- `verl/verl/workers/fsdp_workers.py:233`: add transformer policy We force reference policy to use CPUOffload to save memory. We force turn off CPUOffload for actor because it causes incorrect results when using grad accumulation
+- `verl/verl/workers/fsdp_workers.py:252`: add more optimizer args into config
+- `verl/verl/workers/fsdp_workers.py:289`: a sharding manager that do nothing?
+- `verl/verl/workers/fsdp_workers.py:416`: here, we should return all metrics
+- `verl/verl/workers/megatron_workers.py:204`: add more optimizer args into config
+- `verl/verl/workers/megatron_workers.py:338`: here, we should return all metrics
+- `verl/verl/workers/megatron_workers.py:478`: support vpp here vpp_rank = mpu.get_virtual_pipeline_model_parallel_rank()  # this will be set inside get_model this_megatron_config = copy.deepcopy(megatron_config) this_megatron_config.virtual_pipeline_model_parallel_rank = vpp_rank
+- `verl/verl/workers/megatron_workers.py:507`: add more optimizer args into config
+- `verl/verl/workers/megatron_workers.py:667`: add more optimizer args into config
+- `verl/verl/workers/megatron_workers.py:720`: reward model use itself tokenizer instead of sft tokenizer the input_ids, responses, attention_mask and position_ids may be different!
+
+#### verl/verl/workers/actor/
+- `verl/verl/workers/actor/megatron_actor.py:225`: actually, we just need to control the sampling order.
+- `verl/verl/workers/actor/megatron_actor.py:301`: we may use the new schedule instead for flash-attn: (seq_len, batch_size, hidden_size) = (mbs*seq_len, 1, hidden_size)
+
+#### verl/verl/workers/critic/
+- `verl/verl/workers/critic/megatron_critic.py:176`: we may use the new schedule instead for flash-attn: (seq_len, batch_size, hidden_size) = (mbs*seq_len, 1, hidden_size)
+
+#### verl/verl/workers/reward_model/megatron/
+- `verl/verl/workers/reward_model/megatron/reward_model.py:192`: actually, we just need to control the sampling order.
+- `verl/verl/workers/reward_model/megatron/reward_model.py:233`: we may use the new schedule instead for flash-attn: (seq_len, batch_size, hidden_size) = (mbs*seq_len, 1, hidden_size)
+
+#### verl/verl/workers/rollout/
+- `verl/verl/workers/rollout/hf_rollout.py:98`: filter out the seq with no answers like ds-chat
+
+#### verl/verl/workers/sharding_manager/
+- `verl/verl/workers/sharding_manager/fsdp_ulysses.py:49`: check how to set seed for each model
+- `verl/verl/workers/sharding_manager/fsdp_ulysses.py:56`: check how to set seed for each model
+- `verl/verl/workers/sharding_manager/fsdp_vllm.py:82`: offload FSDP model weights self.module.cpu() torch.cuda.empty_cache() if torch.distributed.get_rank() == 0: print(f'after model to cpu in sharding manager memory allocated: {torch.cuda.memory_allocated() / 1e9}GB, reserved: {torch.cuda.memory_reserved() / 1e9}GB')
+- `verl/verl/workers/sharding_manager/fsdp_vllm.py:113`: Current impl doesn't consider FSDP with torch micro-dp
+- `verl/verl/workers/sharding_manager/fsdp_vllm.py:122`: Current impl doesn't consider FSDP with torch micro-dp
+- `verl/verl/workers/sharding_manager/fsdp_vllm.py:130`: shall we build a micro_dp group for vllm when integrating with vLLM?
+- `verl/verl/workers/sharding_manager/megatron_vllm.py:76`: after binding to the memory buffer, we can load the checkpoint here
+
