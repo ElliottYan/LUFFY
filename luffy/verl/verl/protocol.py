@@ -111,8 +111,10 @@ def fold_batch_dim(data: 'DataProto', new_batch_size):
     """
     Fold a batch dim from [bsz, xxx] into [new_bsz, bsz // new_bsz, xxx]
     """
+    # TODO: Optimize memory usage during tensor reshaping
+    # TODO: Add support for different tensor types and shapes
+    
     batch_size = data.batch.batch_size[0]
-
     assert batch_size % new_batch_size == 0
 
     tensor: TensorDict = data.batch
@@ -131,6 +133,9 @@ def unfold_batch_dim(data: 'DataProto', batch_dims=2):
     """
     Unfold the first n dims as new batch dim
     """
+    # TODO: Optimize tensor view operations for performance
+    # TODO: Add error handling for invalid batch dimensions
+    
     tensor: TensorDict = data.batch
     non_tensor = data.non_tensor_batch
     tensor.auto_batch_size_(batch_dims=batch_dims)
